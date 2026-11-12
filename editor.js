@@ -1,6 +1,6 @@
 document.head.insertAdjacentHTML("beforeend", "<style>.ov-card{position:absolute;top:44%;width:40%;height:30%;border-radius:18px;display:none;align-items:flex-end;justify-content:center;padding-bottom:10px;font-weight:800;font-size:13px;touch-action:none;cursor:grab;z-index:2}</style>");
 // Loaded only when "try the demo" is pressed: the main page stays light (Nov 11).
-document.getElementById("app").insertAdjacentHTML("beforeend", "<div id=\"edit\">\n  <div class=\"evid\" id=\"evid\">\n    <video id=\"eVideo\" playsinline preload=\"auto\"></video>\n    <div class=\"ov-title\" id=\"ovTitle\"></div>\n    <div class=\"ov-chip glass\" id=\"ovChip\"></div>\n    <div class=\"ov-cap\" id=\"ovCap\"></div><div class=\"ov-card glass\" id=\"ovCard0\"></div><div class=\"ov-card glass\" id=\"ovCard1\"></div>\n    <div class=\"etime\"><div class=\"eplay glass\" id=\"ePlay\">▶</div><div class=\"bar\" id=\"eBar\"><i id=\"eFill\"></i><b id=\"eKnob\"></b></div><span id=\"eSec\">0:00</span></div>\n  </div>\n  <div class=\"eclose glass\" id=\"eClose\"></div>\n  <div class=\"epane glass\" id=\"epane\">\n    <div class=\"etabs\"><span class=\"on\" data-tab=\"subs\" id=\"tabSubs\"></span><span data-tab=\"effects\" id=\"tabFx\"></span></div>\n    <div class=\"elist\" id=\"elist\"></div>\n    <div class=\"tools\" id=\"tools\"></div>\n    <button class=\"cta\" id=\"eSend\" style=\"margin:0\"></button>\n  </div>\n  <div class=\"epane glass\" id=\"review\" style=\"display:none\">\n    <div class=\"h\" style=\"font-size:17px;text-align:center\" id=\"rvTitle\"></div>\n    <div class=\"hint\" style=\"text-align:center\" id=\"rvHint\"></div>\n    <div class=\"rv\" id=\"rvList\" style=\"flex:1;min-height:0\"></div>\n    <button class=\"cta\" id=\"rvYes\" style=\"margin:0\"></button><button class=\"ghost\" id=\"rvNo\"></button>\n  </div>\n  <div class=\"eclose glass\" id=\"rvBack\" style=\"display:none\"></div>\n  <div class=\"toast glass\" id=\"toast\"></div>\n</div>\n");
+document.getElementById("app").insertAdjacentHTML("beforeend", "<div id=\"edit\">\n  <div class=\"evid\" id=\"evid\">\n    <video id=\"eVideo\" playsinline preload=\"auto\"></video>\n    <div class=\"ov-title\" id=\"ovTitle\"></div>\n    <div class=\"ov-chip glass\" id=\"ovChip\"></div>\n    <div class=\"ov-cap\" id=\"ovCap\"></div><div class=\"ov-card glass\" id=\"ovCard0\"></div><div class=\"ov-card glass\" id=\"ovCard1\"></div>\n    <div class=\"etime\"><div class=\"eplay glass\" id=\"ePlay\">▶</div><div class=\"bar\" id=\"eBar\"><i id=\"eFill\"></i><b id=\"eKnob\"></b></div><span id=\"eSec\">0:00</span></div>\n  </div>\n  <div class=\"eclose glass\" id=\"eClose\"></div>\n  <div class=\"epane glass\" id=\"epane\">\n    <div class=\"etabs\"><span class=\"on\" data-tab=\"subs\" id=\"tabSubs\"></span><span data-tab=\"effects\" id=\"tabFx\"></span></div>\n    <div class=\"elist\" id=\"elist\"></div>\n    <div class=\"tools\" id=\"tools\"></div>\n    <button class=\"cta\" id=\"eSend\" style=\"margin:0\"></button>\n  </div>\n  <div class=\"epane glass\" id=\"review\" style=\"display:none\">\n    <div class=\"h\" style=\"font-size:17px;text-align:center\" id=\"rvTitle\"></div>\n    <div class=\"hint\" style=\"text-align:center\" id=\"rvHint\"></div>\n    <div class=\"rv\" id=\"rvList\" style=\"flex:1;min-height:0\"></div>\n    <button class=\"cta\" id=\"rvYes\" style=\"margin:0\"></button><button class=\"ghost\" id=\"rvNo\"></button><button class=\"ghost\" id=\"rvWrite\" style=\"display:none;color:#ffe08a\"></button>\n  </div>\n  <div class=\"eclose glass\" id=\"rvBack\" style=\"display:none\"></div>\n  <div class=\"toast glass\" id=\"toast\"></div>\n</div>\n");
 // ---------- "try the demo": the approved editor, live on the demo video, nothing is sent (Nov 11)
 const ED = {plan: null, tab: "subs", tool: null, edits: {}, removed: {}, marks: {}, moves: {}, size: 100, place: 0, voice: 100, music: 30, auto: true,
   tune: 0, color: "gold", editing: null, mode: "list"};
@@ -25,6 +25,7 @@ function applyLevels() {
 }
 function tuneSrc() {
   if (ED.tune === 9 && AU.mine) return AU.mine;
+  if (ED.order) return style.tunes ? ED.base + `music_${Math.min(ED.tune, style.tunes - 1) + 1}.m4a` : "";
   if (style.tunes) return demoUrl(style.id, `music_${Math.min(ED.tune, style.tunes - 1) + 1}.m4a`);
   return "";
 }
@@ -47,13 +48,27 @@ const ev = () => $("eVideo");
 
 async function openTry() {
   haptic("medium"); stop();
+  ED.order = null; ED.base = "";
   ED.plan = await (await fetch(demoUrl(style.id, "plan.json"))).json().catch(() => null);
   if (!ED.plan) return;
+  openEd(demoUrl(style.id, "before.mp4"), demoUrl(style.id, "before.jpg"));
+}
+// Nov 12: the client's own finished order: its captions and effects, its video and the mood's tunes
+// come from the bot; "Иә, жіберу" sends the changes and the video is rendered again.
+async function openOrder(id) {
+  const r = await api("/api/order", {token: D.token, order: id});
+  if (!r.ok) return r.error || T.app_failed;
+  style = r.style; color = "gold";
+  ED.order = r.order; ED.base = API + r.base; ED.plan = r.plan;
+  openEd(ED.base + "video.mp4", ED.base + "video.jpg");
+  return "";
+}
+function openEd(src, poster) {
   Object.assign(ED, {tab: "subs", tool: null, edits: {}, removed: {}, marks: {}, moves: {}, size: 100, place: 0, voice: 100, music: 30, auto: true, tune: 0, color, editing: null, mode: "list"});
   $("tabFx").style.display = style.editFx === false ? "none" : "";
   setTune(); applyLevels();
   VIEW.s = 1; VIEW.x = 0; VIEW.y = 0; applyView();
-  const v = ev(); v.src = demoUrl(style.id, "before.mp4"); v.poster = demoUrl(style.id, "before.jpg"); v.currentTime = 0; v.volume = 1;
+  const v = ev(); if (ED.order) v.crossOrigin = "anonymous"; v.src = src; v.poster = poster; v.currentTime = 0; v.volume = 1;
   $("tabSubs").textContent = T.ed_subs; $("tabFx").textContent = T.ed_effects; $("eClose").textContent = "✕ " + T.ed_close;
   $("edit").classList.add("show"); $("review").style.display = "none"; $("epane").style.display = "flex"; $("rvBack").style.display = "none";
   applyColor(); renderEd(); overlay();
@@ -129,7 +144,7 @@ function renderEd() {
     L.innerHTML = `<div class="row2"><span>${T.ed_music}</span><span class="autob${ED.auto ? " on" : ""}" id="mAuto">${T.ed_auto}</span></div>
       <div class="row2" style="font-weight:500;font-size:12px"><span>${T.ed_volume}</span><span class="hint" id="mPct">${ED.music}%</span></div><input type="range" id="mVol" min="0" max="100" step="5" value="${ED.music}">
       <div class="row2" style="font-weight:500;font-size:12px"><span>${T.ed_my_voice}</span><span class="hint" id="vPct">${ED.voice}%</span></div><input type="range" id="vVol" min="0" max="150" step="5" value="${ED.voice}">
-      <div class="opt">${Array.from({length: tunes}, (_, n) => `<span data-t="${n}">${T.ed_tune} ${n + 1}</span>`).join("")}<span data-t="9">${T.ed_mine}</span></div>`;
+      <div class="opt">${Array.from({length: tunes}, (_, n) => `<span data-t="${n}">${T.ed_tune} ${n + 1}</span>`).join("")}${ED.order ? "" : `<span data-t="9">${T.ed_mine}</span>`}</div>`;
     L.querySelector("#mAuto").onclick = () => { haptic(); Object.assign(ED, {auto: true, voice: 100, music: 30}); applyLevels(); renderEd(); };
     L.querySelector("#mVol").oninput = e => { audioInit(); ED.music = +e.target.value; ED.auto = false; applyLevels();
       L.querySelector("#mPct").textContent = ED.music + "%"; L.querySelector("#mAuto").classList.remove("on"); renderEdSoft(); };
@@ -202,14 +217,17 @@ ev().addEventListener("dblclick", () => { VIEW.s = 1; VIEW.x = 0; VIEW.y = 0; ap
 { const b = $("eBar"); let drag = false; const go = e => { const r = b.getBoundingClientRect(), f = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); if (ev().duration) ev().currentTime = f * ev().duration; overlay(); };
   b.onpointerdown = e => { drag = true; b.setPointerCapture(e.pointerId); go(e); }; b.onpointermove = e => { if (drag) go(e); }; b.onpointerup = () => drag = false; }
 document.querySelectorAll(".etabs span").forEach(s => s.onclick = () => { haptic(); ED.tab = s.dataset.tab; ED.tool = null; ED.editing = null; renderEd(); });
-$("eClose").onclick = () => { ev().pause(); AU.el.pause(); $("edit").classList.remove("show"); };
+$("eClose").onclick = () => { ev().pause(); AU.el.pause();
+  if (ED.order) { try { tg.close(); } catch (e) {} return; }
+  $("edit").classList.remove("show"); };
 
 // ---------- move a title, a glass chip or the captions with a finger (Nov 11)
 function moveEl(el) { const m = ED.moves[el.dataset.k]; el.style.transform = m ? `translate(${m.x}px, ${m.y}px)` : ""; }
 ["ovTitle", "ovChip", "ovCap", "ovCard0", "ovCard1"].forEach(id => {
   const el = $(id); let start = null;
   let hold = null;  // Nov 12 (user): hold the detail, the video stops, then ONE finger moves it
-  el.onpointerdown = e => { const k = el.dataset.k; if (!k || !el.textContent.trim()) return; e.preventDefault(); e.stopPropagation();
+  el.onpointerdown = e => { if (ED.order) return;  // a real order: details are not moved yet
+    const k = el.dataset.k; if (!k || !el.textContent.trim()) return; e.preventDefault(); e.stopPropagation();
     el.setPointerCapture(e.pointerId); const px = e.clientX, py = e.clientY;
     clearTimeout(hold);
     hold = setTimeout(() => { hold = null; ev().pause(); const m = ED.moves[k] || {x: 0, y: 0};
@@ -242,7 +260,8 @@ function changesList() {
 $("eSend").onclick = () => {
   const list = changesList(); if (!list.length) return; haptic("medium"); ev().pause();
   $("rvTitle").textContent = T.ed_changes + " · " + list.length; $("rvHint").textContent = T.ed_watch;
-  $("rvYes").textContent = T.ed_yes; $("rvNo").textContent = T.ed_keep;
+  $("rvYes").textContent = T.ed_yes; $("rvNo").textContent = T.ed_keep; $("rvYes").disabled = false;
+  $("rvWrite").textContent = T.ed_write; $("rvWrite").style.display = ED.order ? "block" : "none";
   $("rvList").innerHTML = ""; list.forEach(c => { const r = document.createElement("div"); r.className = "rvi";
     r.innerHTML = `<span class="tm">${c.t === null ? "•" : fmt(c.t)}</span><div><b>${c.name}</b><br>${c.html}</div><span class="go">▶</span>`;
     r.onclick = () => { if (c.t !== null) ev().currentTime = c.t + 0.05; overlay(); ev().play(); $("review").style.display = "none"; $("rvBack").style.display = "block"; $("rvBack").textContent = T.ed_back_list; };
@@ -250,7 +269,21 @@ $("eSend").onclick = () => {
   $("epane").style.display = "none"; $("review").style.display = "flex"; ED.mode = "review";
 };
 $("rvBack").onclick = () => { ev().pause(); $("rvBack").style.display = "none"; $("review").style.display = "flex"; };
-$("rvYes").onclick = () => { haptic("heavy"); $("toast").textContent = T.ed_demo_done; $("toast").style.display = "block";
+function toastClose(text) { $("toast").textContent = text; $("toast").style.display = "block";
+  setTimeout(() => { try { tg.close(); } catch (e) {} }, 2600); }
+$("rvWrite").onclick = async () => { haptic(); const r = await api("/api/order/text", {token: D.token, order: ED.order});
+  if (r.ok) { try { tg.close(); } catch (e) {} } else toastClose(r.error || T.app_failed); };
+$("rvYes").onclick = async () => { haptic("heavy");
+  if (ED.order) {  // a real order: the changes go to the bot, the new video comes to the chat
+    if ($("rvYes").disabled) return; $("rvYes").disabled = true;
+    const changes = {edits: ED.edits, removed: ED.removed, marks: ED.marks, voice: ED.voice, music: ED.music, tune: ED.tune,
+      color: ED.color !== color ? ED.color : ""};
+    const r = await api("/api/order/apply", {token: D.token, order: ED.order, changes});
+    ev().pause(); AU.el.pause(); toastClose(r.ok ? r.text : (r.error || T.app_failed)); return;
+  }
+  $("toast").textContent = T.ed_demo_done; $("toast").style.display = "block";
   setTimeout(() => { $("toast").style.display = "none"; openTry(); }, 3200); };
-$("rvNo").onclick = () => { openTry(); };
+$("rvNo").onclick = () => {
+  if (ED.order) { $("review").style.display = "none"; $("rvBack").style.display = "none"; $("epane").style.display = "flex"; ED.mode = "list"; return; }
+  openTry(); };
 // long press on a detail: the video stops (no stop sign shown), then one finger moves it (Nov 12)
