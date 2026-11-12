@@ -398,7 +398,9 @@ $("bal").onclick = () => { $("tarNote").style.display = "none"; open("tariffs");
 
 // ---------- send a video
 let started = null;
+let starting = false;
 $("send").onclick = async () => {
+  if (starting) return; starting = true; setTimeout(() => { starting = false; }, 2500);  // Nov 13: one tap = one start
   haptic("medium"); stop();
   started = await api("/api/start", {token: D.token, style: style.id, color, title_fx: style.tfx ? tfx : undefined});
   if (!started.ok) {
@@ -477,6 +479,15 @@ $("errBack").onclick = () => { $("errScreen").classList.remove("show"); };
 $("upCancel").onclick = () => { cancelled = true; $("upScreen").classList.remove("show"); };
 $("okChat").onclick = () => { if (tg) tg.close(); };
 
+// Nov 13: one piece to R2 with live byte progress (fetch cannot report upload progress)
+function putPart(url, piece, onBytes) {
+  return new Promise(res => { const x = new XMLHttpRequest(); let last = 0;
+    x.open("PUT", url);
+    x.upload.onprogress = e => { if (e.loaded > last) { onBytes(e.loaded - last); last = e.loaded; } };
+    x.onload = () => res({etag: x.status >= 200 && x.status < 300 ? x.getResponseHeader("ETag") : null, sent: last});
+    x.onerror = x.onabort = x.ontimeout = () => res({etag: null, sent: last});
+    x.send(piece); });
+}
 async function upload(files) {
   cancelled = false;
   const token = started.upload, total = files.reduce((a, f) => a + f.size, 0); let sent = 0, t0 = Date.now();
@@ -498,9 +509,10 @@ async function upload(files) {
         const f = files[n], urls = plan.files[n].urls, tags = new Array(urls.length); let next = 0;
         async function putter() { while (next < urls.length) { if (cancelled) throw new Error("cancel"); const i = next++;
           const piece = f.slice(i * plan.part, Math.min((i + 1) * plan.part, f.size)); let ok = false;
-          for (let k = 0; k < 6 && !ok; k++) { try { const r = await fetch(urls[i], {method: "PUT", body: piece}); if (r.ok) { tags[i] = r.headers.get("ETag"); ok = !!tags[i]; } } catch (e) {}
-            if (!ok) await new Promise(r => setTimeout(r, 1500 * (k + 1))); }
-          if (!ok) throw new Error("network"); progress(piece.size); } }
+          for (let k = 0; k < 6 && !ok; k++) { const r = await putPart(urls[i], piece, progress);
+            if (r.etag) { tags[i] = r.etag; ok = true; progress(piece.size - r.sent); } else { progress(-r.sent); }
+            if (!ok) await new Promise(res => setTimeout(res, 1500 * (k + 1))); }
+          if (!ok) throw new Error("network"); } }
         await Promise.all(Array.from({length: Math.min(4, urls.length)}, putter)); etags.push(tags);
       }
       const j = await (await fetch(`${API}/r2/done/${token}/${plan.uid}`, {method: "POST", headers: {"Content-Type": "application/json"},
