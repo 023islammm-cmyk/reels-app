@@ -42,6 +42,11 @@ button{font-family:inherit}
 .dotst{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;position:relative;
   background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.22);transition:transform .25s,border-color .25s,background .25s}
 .dotst.on{border:1.5px solid var(--gold);background:rgba(255,209,92,.18);transform:scale(1.06);box-shadow:0 0 12px rgba(255,209,92,.45)}
+.dname{position:absolute;right:calc(100% + 16px);top:50%;margin-top:-13px;height:26px;line-height:26px;padding:0 11px;border-radius:999px;white-space:nowrap;font-size:12.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.42);border:.5px solid rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-shadow:0 1px 3px rgba(0,0,0,.5);opacity:0}
+.dotst.on .dname{color:#1a1300;background:linear-gradient(180deg,#FFE08A,#F2A91C);border-color:transparent;text-shadow:none}
+@keyframes nameIn{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+#app:not(.playing) .rail .dname{animation:nameIn .5s cubic-bezier(.2,.8,.2,1) both}
+#app:not(.playing) .rail .dotst:nth-child(2) .dname{animation-delay:.07s}#app:not(.playing) .rail .dotst:nth-child(3) .dname{animation-delay:.14s}#app:not(.playing) .rail .dotst:nth-child(4) .dname{animation-delay:.21s}
 .more{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;background:rgba(255,255,255,.10)}
 .top,.rail,.stylename{transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
 .playing .top{transform:translateY(-120px);opacity:0}.playing .rail{transform:translateX(90px);opacity:0}
@@ -271,6 +276,8 @@ function renderRail() {
   const rail = $("rail"); rail.innerHTML = "";
   D.styles.slice(0, 4).forEach(s => {
     const d = document.createElement("div"); d.className = "dotst"; d.dataset.id = s.id; d.textContent = icon(s);
+    // Nov 12 (user): while the video is stopped every style's name stands beside its button (slides in from the right)
+    const nm = document.createElement("span"); nm.className = "dname"; nm.textContent = label(s); d.append(nm);
     d.onclick = () => { haptic(); pick(s); }; rail.append(d);
   });
   if (D.styles.length > 4) { const m = document.createElement("div"); m.className = "more"; m.textContent = "⌄"; m.onclick = () => open("allStyles"); rail.append(m); }
