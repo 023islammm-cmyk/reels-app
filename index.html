@@ -242,6 +242,9 @@ async function boot() {
   // Nov 12: opened from the chat's "✏️ Түзету" (?order=1031): straight into the editor on that order
   const ORDER = new URLSearchParams(location.search).get("order") || "";
   if (/^\d{1,9}$/.test(ORDER)) {
+    // Nov 13: a client correcting an order sees only the editor, never the demo page behind it
+    document.head.insertAdjacentHTML("beforeend", "<style>#app.order-mode *{visibility:hidden}#app.order-mode #edit,#app.order-mode #edit *,#app.order-mode #empty{visibility:visible}</style>");
+    $("app").classList.add("order-mode");
     $("empty").style.display = "flex"; $("empty").textContent = T.ed_preparing;
     try {
       await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = HOSTED ? "editor.js" : "/app/editor.js"; sc.onload = ok; sc.onerror = no; document.body.append(sc); });
