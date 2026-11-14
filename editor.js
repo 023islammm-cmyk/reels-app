@@ -1,6 +1,6 @@
 document.head.insertAdjacentHTML("beforeend", "<style>.ov-card{position:absolute;top:44%;width:40%;height:30%;border-radius:18px;display:none;align-items:flex-end;justify-content:center;padding-bottom:10px;font-weight:800;font-size:13px;touch-action:none;cursor:grab;z-index:2}</style>");
 // Loaded only when "try the demo" is pressed: the main page stays light (Nov 11).
-document.getElementById("app").insertAdjacentHTML("beforeend", "<div id=\"edit\">\n  <div class=\"evid\" id=\"evid\">\n    <video id=\"eVideo\" playsinline preload=\"auto\"></video>\n    <div class=\"ov-title\" id=\"ovTitle\"></div>\n    <div class=\"ov-chip glass\" id=\"ovChip\"></div>\n    <div class=\"ov-cap\" id=\"ovCap\"></div><div class=\"ov-card glass\" id=\"ovCard0\"></div><div class=\"ov-card glass\" id=\"ovCard1\"></div>\n    <div class=\"etime\"><div class=\"eplay glass\" id=\"ePlay\">▶</div><div class=\"bar\" id=\"eBar\"><i id=\"eFill\"></i><b id=\"eKnob\"></b></div><span id=\"eSec\">0:00</span></div>\n  </div>\n  <div class=\"eclose glass\" id=\"eClose\"></div>\n  <div class=\"epane glass\" id=\"epane\">\n    <div class=\"etabs\"><span class=\"on\" data-tab=\"subs\" id=\"tabSubs\"></span><span data-tab=\"effects\" id=\"tabFx\"></span></div>\n    <div class=\"elist\" id=\"elist\"></div>\n    <div class=\"tools\" id=\"tools\"></div>\n    <button class=\"cta\" id=\"eSend\" style=\"margin:0\"></button>\n  </div>\n  <div class=\"epane glass\" id=\"review\" style=\"display:none\">\n    <div class=\"h\" style=\"font-size:17px;text-align:center\" id=\"rvTitle\"></div>\n    <div class=\"hint\" style=\"text-align:center\" id=\"rvHint\"></div>\n    <div class=\"rv\" id=\"rvList\" style=\"flex:1;min-height:0\"></div>\n    <button class=\"cta\" id=\"rvYes\" style=\"margin:0\"></button><button class=\"ghost\" id=\"rvNo\"></button><button class=\"ghost\" id=\"rvWrite\" style=\"display:none;color:#ffe08a\"></button>\n  </div>\n  <div class=\"eclose glass\" id=\"rvBack\" style=\"display:none\"></div>\n  <div class=\"toast glass\" id=\"toast\"></div>\n</div>\n");
+document.getElementById("app").insertAdjacentHTML("beforeend", "<div id=\"edit\">\n  <div class=\"evid\" id=\"evid\">\n    <video id=\"eVideo\" playsinline preload=\"auto\"></video>\n    <div class=\"ov-title\" id=\"ovTitle\"></div>\n    <div class=\"ov-chip glass\" id=\"ovChip\"></div>\n    <div class=\"ov-cap\" id=\"ovCap\"></div><div class=\"ov-card glass\" id=\"ovCard0\"></div><div class=\"ov-card glass\" id=\"ovCard1\"></div>\n    <div class=\"etime\"><div class=\"eplay glass\" id=\"ePlay\">▶</div><div class=\"bar\" id=\"eBar\"><i id=\"eFill\"></i><b id=\"eKnob\"></b></div><span id=\"eSec\">0:00</span></div>\n  </div>\n  <div class=\"eclose glass\" id=\"eClose\"></div>\n  <div class=\"epane glass\" id=\"epane\">\n    <div class=\"etabs\"><span class=\"on\" data-tab=\"subs\" id=\"tabSubs\"></span><span data-tab=\"effects\" id=\"tabFx\"></span></div>\n    <div class=\"elist\" id=\"elist\"></div>\n    <div class=\"tools\" id=\"tools\"></div>\n    <button class=\"cta\" id=\"eSend\" style=\"margin:0\"></button>\n  </div>\n  <div class=\"epane glass\" id=\"review\" style=\"display:none\">\n    <div class=\"h\" style=\"font-size:17px;text-align:center\" id=\"rvTitle\"></div>\n    <div class=\"hint\" style=\"text-align:center\" id=\"rvHint\"></div>\n    <div class=\"rv\" id=\"rvList\" style=\"flex:1;min-height:0\"></div>\n    <button class=\"cta\" id=\"rvYes\" style=\"margin:0\"></button><button class=\"ghost\" id=\"rvNo\"></button><button class=\"ghost\" id=\"rvWrite\" style=\"display:none;color:#ffe08a\"></button>\n  </div>\n  <div class=\"eclose glass\" id=\"rvBack\" style=\"display:none\"></div>\n  <div class=\"toast glass\" id=\"toast\"></div>\n  <div class=\"enotice\" id=\"eNotice\"><div class=\"enbox glass\" role=\"dialog\" aria-modal=\"true\"><button class=\"enx\" id=\"enX\" aria-label=\"X\">✕</button><div class=\"enh\" id=\"enTitle\"></div><div class=\"enp\" id=\"enText\"></div><button class=\"cta\" id=\"enOk\"></button></div></div>\n</div>\n");
 // ---------- "try the demo": the approved editor, live on the demo video, nothing is sent (Nov 11)
 const ED = {plan: null, tab: "subs", tool: null, edits: {}, removed: {}, marks: {}, moves: {}, size: 100, place: 0, voice: 100, music: 30, auto: true,
   tune: 0, color: "gold", editing: null, mode: "list"};
@@ -61,6 +61,7 @@ async function openOrder(id) {
   style = r.style; color = "gold";
   ED.order = r.order; ED.base = API + r.base; ED.plan = r.plan;
   openEd(ED.base + "video.mp4", ED.base + "video.jpg");
+  notice();
   return "";
 }
 function openEd(src, poster) {
@@ -72,6 +73,14 @@ function openEd(src, poster) {
   $("tabSubs").textContent = T.ed_subs; $("tabFx").textContent = T.ed_effects; $("eClose").textContent = "✕ " + T.ed_close;
   $("edit").classList.add("show"); $("review").style.display = "none"; $("epane").style.display = "flex"; $("rvBack").style.display = "none";
   applyColor(); renderEd(); overlay();
+}
+// Nov 14 (owner): the editor shows the video plainly, so clients thought their effects were lost;
+// a notice says the style is kept and only captions, colour, music and voice change here
+function notice() {
+  $("enTitle").textContent = T.ed_notice_title; $("enText").textContent = T.ed_notice_text; $("enOk").textContent = T.ed_notice_ok;
+  $("eNotice").classList.add("show");
+  const shut = () => { haptic(); $("eNotice").classList.remove("show"); };
+  $("enX").onclick = shut; $("enOk").onclick = shut;
 }
 function key(kind, i) { return kind + ":" + i; }
 function capText(i) { return ED.edits[key("c", i)] ?? ED.plan.captions[i].text; }
