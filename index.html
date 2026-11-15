@@ -98,6 +98,42 @@ button{font-family:inherit}
 .check{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(52,199,89,.18);border:2px solid #34c759;animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
 .warn{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,159,10,.16);border:2px solid #ff9f0a;font-size:36px;font-weight:800;color:#ff9f0a}
 @keyframes pop{from{transform:scale(.3);opacity:0}}
+/* Nov 16 (owner): the square button right of "send" (profile / admin panel) and their pages */
+.sendrow{display:flex;gap:8px;align-items:stretch}.sendrow .btnrow{flex:1;min-width:0}
+.me{flex:none;width:84px;border-radius:18px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-family:inherit;font-weight:600;font-size:11.5px;line-height:1.15;padding:6px 4px;text-align:center}
+.me span{font-size:22px;line-height:1}
+.pg{position:absolute;inset:0;z-index:30;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 60% at 50% 0%,#3a2b10 0%,#0b0b0d 55%) #0b0b0d;
+  padding:calc(var(--top) + 14px) 14px calc(var(--bottom) + 30px)}
+.pg.show{display:block}#pgProfile{z-index:31}
+.pgtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.pgtop b{font-size:18px}
+.pgx{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px}
+.card2{border-radius:20px;padding:14px;margin-top:12px}
+.card2 h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600}
+.who{display:flex;gap:14px;align-items:center;margin-top:0}
+.ava{width:74px;height:74px;border-radius:50%;flex:none;border:2px solid var(--gold);background:linear-gradient(135deg,#FFD15C,#c77a1a) center/cover;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#2a1d00}
+.who b{display:block;font-size:17px}.who .u{color:var(--muted);font-size:12.5px}.who .i{font-size:12px;color:var(--muted);margin-top:4px}.who .i em{font-style:normal;color:#fff;font-weight:600}
+.balbig{display:flex;align-items:baseline;gap:8px}.balbig b{font-size:34px;color:var(--gold);line-height:1}.balbig span{color:var(--muted)}
+.meter{height:7px;border-radius:9px;background:rgba(255,255,255,.12);margin:10px 0 2px;overflow:hidden}.meter i{display:block;height:100%;background:var(--gold)}
+.mchips{display:flex;flex-wrap:wrap;gap:6px}.mchips span{border-radius:99px;padding:6px 10px;font-size:12.5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.mchips b{color:var(--gold)}
+.sm{font-size:12px;color:var(--muted);margin-top:8px}
+.nobal{text-align:center}.nobal b{display:block;font-size:16px;margin-bottom:4px}
+.trow{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);margin-bottom:8px;cursor:pointer;position:relative}
+.trow b{font-size:15px}.trow small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.trow .pr{font-weight:800;color:var(--gold);font-size:16px;white-space:nowrap}
+.trow.on{border-color:var(--gold);background:rgba(255,209,92,.10)}
+.trow .tg{position:absolute;top:-8px;left:12px;background:var(--gold);color:#111;font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 7px}
+.hint2{margin-top:6px;padding:12px;border-radius:14px;background:rgba(255,209,92,.08);border:1px solid rgba(255,209,92,.3);font-size:12.5px;line-height:1.4}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.stats4 div{padding:10px 4px;text-align:center;border-radius:14px}
+.stats4 b{display:block;font-size:20px}.stats4 span{font-size:10.5px;color:var(--muted)}.stats4 .g b{color:var(--gold)}
+.find{width:100%;margin:12px 0 10px;padding:11px 12px;border-radius:12px;color:#fff;font-family:inherit;font-size:14px;outline:none}
+.find::placeholder{color:var(--muted)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:start}
+.col2{padding:8px 6px;border-radius:16px}.col2 h5{font-size:12.5px;text-align:center;margin-bottom:6px}.col2 h5 small{display:block;color:var(--muted);font-weight:500;font-size:10.5px}
+.urow{display:flex;gap:6px;align-items:center;padding:7px 4px;border-top:1px solid rgba(255,255,255,.12);cursor:pointer}
+.urow .a{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#111}
+.urow .n{flex:1;min-width:0}.urow .n b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.urow .n span{font-size:10px;color:var(--muted)}
+.urow .c{font-size:11px;font-weight:700;color:var(--gold);white-space:nowrap;text-align:right}.urow .c small{display:block;color:var(--muted);font-weight:500;font-size:9.5px}
+.col2 .none{font-size:11px;color:var(--muted);text-align:center;padding:10px 0}
+
 .bottom{width:100%;max-width:380px;margin-top:auto;display:flex;flex-direction:column;gap:10px}
 .thumb{width:96px;aspect-ratio:9/16;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.3),0 10px 30px rgba(0,0,0,.5);background:#222}
 </style>
@@ -191,7 +227,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="ptitle" id="ptitle"></div>
     <div class="line" id="colorLine"><span id="colorLbl"></span><span class="dots" id="dots"></span></div>
     <div class="line" id="tfxLine" style="display:none"><span id="tfxLbl"></span><span class="tpick" id="tfxPick"></span></div>
-    <div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div>
+    <div class="sendrow"><div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div><button class="me glass" id="me" style="display:none"><span id="meIcon">👤</span><small id="meText"></small></button></div>
   </div>
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
@@ -228,6 +264,8 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="bottom"><button class="cta" id="okChat"></button></div>
   </div>
 </div>
+<div class="pg" id="pgProfile"><div class="pgtop"><b id="prTitle"></b><span class="pgx glass" data-pg-close>✕</span></div><div id="prBody"></div></div>
+<div class="pg" id="pgAdmin"><div class="pgtop"><b id="adTitle"></b><span class="pgx glass" data-pg-close>✕</span></div><div id="adBody"></div></div>
 <script>
 const tg = window.Telegram && Telegram.WebApp;
 const $ = id => document.getElementById(id);
@@ -277,7 +315,7 @@ async function boot() {
       s.plan = s.plan && f.includes("plan"); });
   }
   $("bBefore").textContent = T.app_before; $("bAfter").textContent = T.app_after;
-  $("colorLbl").textContent = T.app_color; $("send").textContent = T.app_send; $("tryDemo").textContent = T.btn_try_demo;
+  $("colorLbl").textContent = T.app_color; $("send").textContent = T.app_send; setupMe(); $("tryDemo").textContent = T.btn_try_demo;
   $("tryDemo").onclick = async () => {  // the editor's code arrives only when it is needed
     if (!window.openTry) await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = HOSTED ? "editor.js" : "/app/editor.js"; sc.onload = ok; sc.onerror = no; document.body.append(sc); });
     openTry();
@@ -561,6 +599,85 @@ async function upload(files) {
     if (String(e && e.message) === "cancel") return;
     showError(T.app_failed, e && e.message && !["network", "start", "done"].includes(e.message) ? e.message : "");
   }
+}
+
+// ---------- Nov 16 (owner): «Менің профилім» (clients) / «Админ панель» (the admin), right of "send"
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
+const HUES = ["#FFD15C", "#ffb38f", "#8fd3ff", "#b7f0a0", "#e3b3ff", "#ffe08f", "#8fffe0", "#ffa3c4", "#a3b8ff"];
+const money = n => Number(n).toLocaleString("ru-RU").replace(/,/g, " ") + " ₸";
+function pgOpen(id) { stop(); $(id).classList.add("show"); $(id).scrollTop = 0; }
+function pgClose(id) { $(id).classList.remove("show"); }
+document.querySelectorAll("[data-pg-close]").forEach(x => x.onclick = () => { haptic(); pgClose(x.closest(".pg").id); });
+function setupMe() {
+  $("me").style.display = "flex";
+  $("meIcon").textContent = D.admin ? "🛠" : "👤"; $("meText").textContent = D.admin ? T.app_admin : T.app_profile;
+  $("prTitle").textContent = T.app_profile; $("adTitle").textContent = "🛠 " + T.app_admin;
+  $("me").onclick = () => { haptic("medium"); D.admin ? openAdmin() : openProfile(); };
+}
+function tariffRows(me) {
+  return D.tariffs.map((x, i) => {
+    const tag = me.tariffId === x.id ? T.pr_yours : (i === 0 && !me.tariffId ? T.pr_try : (i === D.tariffs.length - 1 ? T.pr_best : ""));
+    return `<div class="trow${me.tariffId === x.id ? " on" : ""}" data-tar="${esc(x.id)}">${tag ? `<span class="tg">${esc(tag)}</span>` : ""}`
+      + `<div><b>${esc(x.name)}</b><small>${x.videos} ${esc(T.app_video_word)}</small></div><span class="pr">${money(x.price)}</span></div>`;
+  }).join("");
+}
+function profileHtml(me, self) {
+  const photo = self && tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url;
+  const safePhoto = photo && /^https:\/\/[^'"()\s]+$/.test(photo) ? photo : "";
+  const initial = esc((me.name || me.username || "?").trim().charAt(0).toUpperCase());
+  let h = `<div class="glass card2 who"><div class="ava"${safePhoto ? ` style="background-image:url('${safePhoto}')"` : ""}>${safePhoto ? "" : initial}</div>`
+    + `<div><b>${esc(me.name)}</b>${me.username ? `<div class="u">@${esc(me.username)}</div>` : ""}<div class="i">ID: <em>${me.id}</em></div></div></div>`;
+  if (me.left > 0) {
+    h += `<div class="glass card2"><h4>${esc(T.pr_balance)}</h4><div class="balbig"><b>${me.left}</b><span>${esc(T.pr_left)} · «${esc(me.tariff)}» ${esc(T.pr_tariff_word)}</span></div>`
+      + `<div class="meter"><i style="width:${Math.round(100 * me.left / Math.max(1, me.total))}%"></i></div></div>`;
+  } else {
+    h += `<div class="glass card2 nobal"><b>${esc(T.pr_no_tariff)}</b><span class="sm">${esc(T.pr_no_tariff_sub)}</span></div>`;
+  }
+  h += `<div class="glass card2"><h4>${esc(T.pr_made)} · ${me.madeTotal}</h4>`
+    + (me.made.length ? `<div class="mchips">${me.made.map(m => `<span>${esc(m.style)} <b>${m.n}</b></span>`).join("")}</div>` : `<div class="sm">${esc(T.pr_none_made)}</div>`)
+    + `<div class="sm">${esc(T.pr_in_chat)}</div></div>`;
+  h += `<div class="glass card2"><h4>${esc(me.left > 0 ? T.pr_buy_title : T.pr_choose)}</h4>${tariffRows(me)}<div class="hint2">♾️ ${T.pr_hint}</div></div>`;
+  return h;
+}
+function wireTariffs(box) {
+  box.querySelectorAll("[data-tar]").forEach(row => row.onclick = async () => {
+    haptic("medium"); const r = await api("/api/tariff", {token: D.token, id: row.dataset.tar}); if (r.ok && tg) tg.close();
+  });
+}
+async function openProfile(userId) {
+  const r = userId ? await api("/api/admin/user", {token: D.token, id: userId}) : await api("/api/profile", {token: D.token});
+  if (!r.ok) return;
+  $("prBody").innerHTML = profileHtml(r.me, !userId);
+  if (!userId) wireTariffs($("prBody")); else $("prBody").querySelectorAll("[data-tar]").forEach(x => x.style.cursor = "default");
+  pgOpen("pgProfile");
+}
+let ADM = null;
+function userRows(list) {
+  if (!list.length) return `<div class="none">${esc(T.ad_empty)}</div>`;
+  return list.map(u => `<div class="urow" data-uid="${u.id}"><div class="a" style="background:${HUES[u.id % HUES.length]}">${esc((u.name || "?").charAt(0).toUpperCase())}</div>`
+    + `<div class="n"><b>${esc(u.name)}</b><span>${u.total > 1 ? esc(u.tariff) : u.id}</span></div>`
+    + `<div class="c">${u.total > 1 ? `${u.left}/${u.total}` : u.left}<small>${esc(T.ad_left)}</small></div></div>`).join("");
+}
+function drawAdminLists() {
+  const q = ($("adFind") ? $("adFind").value : "").trim().toLowerCase();
+  const keep = u => !q || String(u.id).includes(q) || (u.name || "").toLowerCase().includes(q);
+  $("adTrial").innerHTML = userRows(ADM.trial.filter(keep)); $("adPaid").innerHTML = userRows(ADM.paid.filter(keep));
+  $("pgAdmin").querySelectorAll("[data-uid]").forEach(x => x.onclick = () => { haptic(); openProfile(Number(x.dataset.uid)); });
+}
+async function openAdmin() {
+  const r = await api("/api/admin", {token: D.token});
+  if (!r.ok) return;
+  ADM = r;
+  $("adBody").innerHTML = `<div class="stats4"><div class="glass"><b>${r.registered}</b><span>${esc(T.ad_registered)}</span></div>`
+    + `<div class="glass"><b>${r.trial.length}</b><span>${esc(T.ad_trial)}</span></div><div class="glass g"><b>${r.paid.length}</b><span>${esc(T.ad_paid)}</span></div>`
+    + `<div class="glass"><b>+${r.today}</b><span>${esc(T.ad_today)}</span></div></div>`
+    + `<input class="find glass" id="adFind" type="search" placeholder="🔎 ${esc(T.ad_search)}">`
+    + `<div class="cols2"><div class="col2 glass"><h5>${esc(T.ad_trial)}<small>${esc(T.ad_trial_sub)}</small></h5><div id="adTrial"></div></div>`
+    + `<div class="col2 glass"><h5>${esc(T.ad_paid_sub)}<small>${esc(D.tariffs.filter((x, i) => i > 0).map(x => x.name).join(" · "))}</small></h5><div id="adPaid"></div></div></div>`
+    + `<div class="hint2" style="margin-top:12px">ℹ️ ${T.ad_hint}</div>`;
+  $("adFind").oninput = drawAdminLists;
+  drawAdminLists();
+  pgOpen("pgAdmin");
 }
 boot();
 </script>
