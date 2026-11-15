@@ -390,7 +390,7 @@ function renderTariffs() {
   const list = $("tarList"); list.innerHTML = "";
   D.tariffs.forEach(x => {
     const row = document.createElement("div"); row.className = "tar";
-    row.innerHTML = `<div>${x.name}<small>${x.videos} ${T.app_video_word} · ${x.days} ${T.app_days}</small></div><b>${x.price.toLocaleString("ru-RU")} ₸</b>`;
+    row.innerHTML = `<div>${x.name}<small>${x.videos} ${T.app_video_word}${x.days > 0 ? ` · ${x.days} ${T.app_days}` : ""}</small></div><b>${x.price.toLocaleString("ru-RU")} ₸</b>`;
     row.onclick = async () => { haptic("medium"); const r = await api("/api/tariff", {token: D.token, id: x.id}); if (r.ok && tg) tg.close(); };
     list.append(row);
   });
