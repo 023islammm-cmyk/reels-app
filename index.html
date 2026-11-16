@@ -292,15 +292,20 @@ let D = null, T = {}, style = null, color = "gold", cur = null, dragging = false
 function haptic(kind) { try { tg.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} }
 function fmt(t) { t = Math.floor(t || 0); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); }
 async function api(path, body) {
-  const r = await fetch(API + path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
-  return r.json().catch(() => ({ok: false}));
+  // Nov 16: a lost connection (an old button with an old bot address) must show a message, never a black page
+  try {
+    const r = await fetch(API + path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+    return await r.json().catch(() => ({ok: false}));
+  } catch (e) { return {ok: false, offline: true}; }
 }
 
 async function boot() {
   if (tg) { try { tg.ready(); tg.expand(); if (tg.requestFullscreen && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0")) tg.requestFullscreen();
     tg.setHeaderColor && tg.setHeaderColor("#000000"); tg.setBackgroundColor && tg.setBackgroundColor("#000000"); } catch (e) {} }
   D = await api("/api/init", {initData: tg ? tg.initData : ""});
-  if (!D.ok) { $("empty").style.display = "flex"; $("empty").textContent = "Ботта /start басыңыз · Нажмите /start в боте"; return; }
+  if (!D.ok) { $("empty").style.display = "flex"; $("empty").textContent = D.offline
+    ? "Бұл батырма ескірген. Чатта /start басып, жаңа «🎬 Видео жіберу» батырмасын басыңыз · Кнопка устарела: нажмите /start в чате и откройте новую кнопку"
+    : "Ботта /start басыңыз · Нажмите /start в боте"; return; }
   T = D.t; document.documentElement.lang = D.lang;
   // Nov 12: opened from the chat's "✏️ Түзету" (?order=1031): straight into the editor on that order
   const ORDER = new URLSearchParams(location.search).get("order") || "";
