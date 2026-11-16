@@ -98,6 +98,9 @@ button{font-family:inherit}
 .check{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(52,199,89,.18);border:2px solid #34c759;animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
 .warn{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,159,10,.16);border:2px solid #ff9f0a;font-size:36px;font-weight:800;color:#ff9f0a}
 @keyframes pop{from{transform:scale(.3);opacity:0}}
+/* Nov 16: while a demo loads a ring turns, so the screen is never just black */
+.spin{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;z-index:6;pointer-events:none;border:3px solid rgba(255,255,255,.18);border-top-color:var(--gold);animation:turn .8s linear infinite;display:none}
+#app.buffering .spin{display:block}@keyframes turn{to{transform:rotate(360deg)}}
 /* Nov 16 (owner): the square button right of "send" (profile / admin panel) and their pages */
 .sendrow{display:flex;gap:10px;align-items:stretch}
 .pleft{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
@@ -220,8 +223,9 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 <div id="app">
   <div class="glow" id="glow"></div>
   <div class="stage">
-    <video class="frame" id="vAfter" playsinline preload="metadata"></video>
-    <video class="frame" id="vBefore" playsinline preload="metadata" style="opacity:0"></video>
+    <video class="frame" id="vAfter" playsinline preload="auto"></video>
+    <video class="frame" id="vBefore" playsinline preload="auto" style="opacity:0"></video>
+    <div class="spin" id="spin"></div>
     <div class="empty" id="empty" style="display:none"></div>
     <div class="play glass" id="play"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></div>
     <div class="time" id="time"><div class="bar" id="bar"><i id="fill"></i><b id="knob"></b></div><span id="sec">0:00</span></div>
@@ -282,7 +286,9 @@ const $ = id => document.getElementById(id);
 // Nov 12: on GitHub Pages the link says where the bot is (?api=https://...); here it is this server.
 const API = (() => { const a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[^/?#]+$/.test(a) ? a : ""; })();
 const HOSTED = !!API;
-function demoUrl(id, name) { return HOSTED ? `demos/${id}/${name}` : `/demo/${id}/${name}`; }
+// Nov 16: demos come through the bot's permanent address (Cloudflare caches them close to the phone; GitHub Pages
+// answered in 0.5-1.8 s from Kazakhstan); the copy on GitHub Pages stays as the fallback
+function demoUrl(id, name) { return HOSTED ? (/reelsmontage\.com$/.test(API) ? `${API}/demo/${id}/${name}` : `demos/${id}/${name}`) : `/demo/${id}/${name}`; }
 window.demoUrl = demoUrl;
 const ICONS = {motion_pro: "⚡", explainer: "📊", animation: "🎬", duel: "⚔️"};
 function icon(s) { const m = s.name.match(/^(\S+)\s+/); return m && !/[0-9A-Za-zА-яЁёӘәҒғҚқҢңӨөҰұҮүІіҺһ]/.test(m[1]) ? m[1] : (ICONS[s.id] || "✨"); }
@@ -440,12 +446,18 @@ function setKind(kind) {
   if (cur && next !== cur) {
     const t = cur.currentTime, playing = !cur.paused; cur.pause();
     if (next.duration) next.currentTime = Math.min(t, next.duration - 0.1); else next.currentTime = t;
-    if (playing) next.play();
+    if (playing) { if (next.readyState < 3) $("app").classList.add("buffering"); next.play(); }
   }
   $("vBefore").style.opacity = kind === "before" ? 1 : 0; cur = next;
 }
 document.querySelectorAll(".segc button").forEach(b => b.onclick = () => { haptic(); setKind(b.dataset.k); });
-function play() { if (!cur || !cur.src) return; $("app").classList.add("playing"); cur.play(); }
+function play() { if (!cur || !cur.src) return; $("app").classList.add("playing");
+  if (cur.readyState < 3) $("app").classList.add("buffering"); cur.play(); }
+// Nov 16: the turning ring shows while the playing demo waits for data, and goes when frames come
+["vAfter", "vBefore"].forEach(id => { const v = $(id);
+  v.addEventListener("waiting", () => { if (v === cur && !v.paused) $("app").classList.add("buffering"); });
+  ["playing", "pause", "emptied", "ended"].forEach(e => v.addEventListener(e, () => { if (v === cur || e === "emptied") $("app").classList.remove("buffering"); }));
+});
 function stop() { $("vAfter").pause(); $("vBefore").pause(); $("app").classList.remove("playing"); }
 $("play").onclick = play;
 ["vAfter", "vBefore"].forEach(id => {
@@ -628,6 +640,8 @@ function setupMe() {
   $("meText").textContent = D.admin ? T.app_admin : T.app_profile;
   $("prTitle").textContent = T.app_profile; $("adTitle").textContent = "🛠 " + T.app_admin;
   $("me").onclick = () => { haptic("medium"); D.admin ? openAdmin() : openProfile(); };
+  // Nov 16: every style's first frame is fetched at once, so switching styles never shows a black screen
+  D.styles.forEach(x => { if (x.after) new Image().src = demoUrl(x.id, "after.jpg"); if (x.before) new Image().src = demoUrl(x.id, "before.jpg"); });
 }
 function tariffRows(me) {
   return D.tariffs.map((x, i) => {
