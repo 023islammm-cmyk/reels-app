@@ -76,6 +76,17 @@ button{font-family:inherit}
   background:linear-gradient(180deg,#FFE08A,#F5B52B);color:#2a1d00;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 24px rgba(245,181,43,.35)}
 .ghost{border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:13px;font-weight:700;font-size:15px;background:rgba(255,255,255,.10);color:#fff;cursor:pointer;width:100%}
 .veil{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:7;opacity:0;pointer-events:none;transition:.3s}
+/* Nov 16 (owner): admin-only «Креативтер» lamp under «Reels Монтаж» and its sheet */
+.lamp{position:absolute;top:calc(var(--top) + 62px);left:14px;width:52px;height:52px;border-radius:50%;z-index:4;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:24px;background:radial-gradient(circle at 50% 45%,rgba(255,214,90,.55),rgba(255,214,90,.08) 70%);
+  border:1px solid rgba(255,225,130,.8);box-shadow:0 0 18px rgba(255,205,70,.55);animation:lampglow 1.6s ease-in-out infinite}
+@keyframes lampglow{0%,100%{box-shadow:0 0 6px rgba(255,205,70,.25);filter:brightness(.8)}50%{box-shadow:0 0 26px rgba(255,205,70,.9);filter:brightness(1.25)}}
+.playing .lamp{transform:translateY(-120px);opacity:0}.lamp{transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.ctile{border-radius:22px;padding:14px 12px;min-height:118px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
+.ctile b{font-size:15px}.ctile small{font-size:11px;opacity:.7;line-height:1.3}.ctile .ci{font-size:26px}
+.ctile.on{border-color:#F5C451;box-shadow:0 0 0 1px #F5C451 inset}.ctile.soon{opacity:.45;cursor:default}
 .sheet{position:absolute;left:10px;right:10px;bottom:calc(var(--bottom) + 10px);border-radius:32px;padding:18px 14px;z-index:8;transform:translateY(120%);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-height:80%;overflow:auto}
 .open .veil{opacity:1;pointer-events:auto}.sheet.show{transform:none}
 .sheet h3{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between}
@@ -230,6 +241,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="play glass" id="play"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></div>
     <div class="time" id="time"><div class="bar" id="bar"><i id="fill"></i><b id="knob"></b></div><span id="sec">0:00</span></div>
     <div class="top"><div class="pill glass">Reels Монтаж</div><div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
+    <div class="lamp" id="lamp" style="display:none">💡</div>
     <div class="stylename glass" id="sname"></div>
     <div class="seg glass segc"><button data-k="before" id="bBefore"></button><button class="on" data-k="after" id="bAfter"></button></div>
   </div>
@@ -245,6 +257,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
   <div class="sheet glass" id="tfxSheet"><h3><span id="tfxTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="tfxHint"></div><div class="tgrid" id="tfxGrid"></div></div>
+  <div class="sheet glass" id="creSheet"><h3><span>💡 Креативтер</span><span class="x" data-close>✕</span></h3><div class="cgrid" id="cgrid"></div></div>
   <div class="sheet glass" id="allStyles"><h3><span id="allTitle"></span><span class="x" data-close>✕</span></h3><div class="grid" id="grid"></div></div>
   <div class="sheet glass mat" id="matSheet">
     <h3><span id="mTitle"></span><span class="x" data-close>✕</span></h3>
@@ -345,7 +358,8 @@ async function boot() {
   $("balText").textContent = D.balance + " " + T.app_videos;
   $("tfxLbl").textContent = T.app_text_fx; $("tfxTitle").textContent = T.app_text_fx; $("tfxHint").textContent = T.app_text_fx_hint;
   $("tfxPick").onclick = () => { haptic(); openLooks(); };
-  renderRail(); renderColors(); renderTariffs(); renderLooks();
+  D.creatives = D.styles.filter(s => s.creative); D.styles = D.styles.filter(s => !s.creative);
+  renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives();
   pick(D.styles[0]);
 }
 
@@ -363,6 +377,23 @@ function renderRail() {
     const c = document.createElement("div"); c.innerHTML = `<div class="dotst" data-id="${s.id}">${icon(s)}</div>`;
     c.append(document.createTextNode(label(s))); c.onclick = () => { pick(s); close(); }; grid.append(c);
   });
+}
+// Nov 16 (owner): ad creatives live behind the lamp, not in the style rail; the admin only for now
+function renderCreatives() {
+  const list = D.creatives || [];
+  $("lamp").style.display = list.length ? "flex" : "none";
+  $("lamp").onclick = () => { haptic("medium"); open("creSheet"); };
+  const g = $("cgrid"); g.innerHTML = "";
+  list.forEach((s, i) => {
+    const t = document.createElement("div"); t.className = "ctile" + (style && style.id === s.id ? " on" : "");
+    t.innerHTML = `<span class="ci">${icon(s)}</span><b></b><small>${i === 0 ? "Шикі видео + ботпен монтаж, кадр ауысады" : ""}</small>`;
+    t.querySelector("b").textContent = (i + 1) + ". " + label(s).replace(/^\S+\s/, "");
+    t.onclick = () => { haptic(); pick(s); close(); renderCreatives(); }; g.append(t);
+  });
+  for (let k = list.length; k < 4; k++) {
+    const t = document.createElement("div"); t.className = "ctile soon";
+    t.innerHTML = `<span class="ci">✨</span><b>${k + 1}. Жақында</b><small>Жаңа креатив</small>`; g.append(t);
+  }
 }
 function renderColors() {
   const dots = $("dots"); dots.innerHTML = "";
