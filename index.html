@@ -288,7 +288,7 @@ const API = (() => { const a = new URLSearchParams(location.search).get("api") |
 const HOSTED = !!API;
 // Nov 16: demos come through the bot's permanent address (Cloudflare caches them close to the phone; GitHub Pages
 // answered in 0.5-1.8 s from Kazakhstan); the copy on GitHub Pages stays as the fallback
-function demoUrl(id, name) { return HOSTED ? (/reelsmontage\.com$/.test(API) ? `${API}/demo/${id}/${name}` : `demos/${id}/${name}`) : `/demo/${id}/${name}`; }
+function demoUrl(id, name) { return HOSTED ? (/reelsmontage\.com$/.test(API) ? `${API}/demo/${id}/${name}?d=light720-v1` : `demos/${id}/${name}`) : `/demo/${id}/${name}`; }
 window.demoUrl = demoUrl;
 const ICONS = {motion_pro: "⚡", explainer: "📊", animation: "🎬", duel: "⚔️"};
 function icon(s) { const m = s.name.match(/^(\S+)\s+/); return m && !/[0-9A-Za-zА-яЁёӘәҒғҚқҢңӨөҰұҮүІіҺһ]/.test(m[1]) ? m[1] : (ICONS[s.id] || "✨"); }
