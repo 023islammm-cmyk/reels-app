@@ -515,6 +515,12 @@ $("bal").onclick = () => { $("tarNote").style.display = "none"; open("tariffs");
 // ---------- send a video
 let started = null;
 let starting = false;
+// Nov 17 (owner): every step of the upload is told to the server (plain text + keepalive: it still goes
+// when the page is being closed), so the bot can help a client whose video never arrived.
+let upPct = 0, uploading = false;
+function report(stage, detail) { try { fetch(API + "/api/upload_event", {method: "POST", keepalive: true,
+  headers: {"Content-Type": "text/plain"}, body: JSON.stringify({token: D.token, stage, detail: String(detail || "")})}); } catch (e) {} }
+document.addEventListener("visibilitychange", () => { if (document.hidden && uploading) report("left", upPct + "%"); });
 $("send").onclick = async () => {
   if (starting) return; starting = true; setTimeout(() => { starting = false; }, 2500);  // Nov 13: one tap = one start
   haptic("medium"); stop();
@@ -566,8 +572,9 @@ $("mSend").onclick = async () => {
   } catch (e) { $("mErr").textContent = T.app_failed; }
   finally { $("mSend").disabled = false; }
 };
+$("file").addEventListener("cancel", () => report("cancelled"));
 $("file").onchange = async () => {
-  const files = Array.from($("file").files); if (!files.length) return;
+  const files = Array.from($("file").files); if (!files.length) return report("cancelled");
   if ($("file").dataset.mat) {
     delete $("file").dataset.mat;
     const maxSec = style.max || 0, other = style.maxOther || maxSec;
@@ -582,8 +589,10 @@ $("file").onchange = async () => {
   }
   const maxSec = style.max || 0;
   const len = await duration(files[0]);
-  if (maxSec && len && len > maxSec + 1) return showError(T.app_too_long, T.app_too_long_text.replace("%LEN%", fmt(len)).replace("%MAX%", fmt(maxSec)));
-  if (files.some(f => f.size > D.maxBytes)) return showError(T.app_failed, "");
+  if (maxSec && len && len > maxSec + 1) { report("too_long", fmt(len));
+    return showError(T.app_too_long, T.app_too_long_text.replace("%LEN%", fmt(len)).replace("%MAX%", fmt(maxSec))); }
+  if (files.some(f => f.size > D.maxBytes)) { report("too_big", Math.round(files[0].size / 1048576) + " MB");
+    return showError(T.app_failed, T.app_too_big); }
   upload(files);
 };
 function duration(file) { return new Promise(res => { const v = document.createElement("video"); v.preload = "metadata";
@@ -592,7 +601,7 @@ function showError(title, text) { $("errTitle").textContent = title; $("errText"
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("show")); $("errScreen").classList.add("show"); }
 $("errOther").onclick = () => { $("errScreen").classList.remove("show"); $("file").value = ""; $("file").click(); };
 $("errBack").onclick = () => { $("errScreen").classList.remove("show"); };
-$("upCancel").onclick = () => { cancelled = true; $("upScreen").classList.remove("show"); };
+$("upCancel").onclick = () => { cancelled = true; uploading = false; report("cancelled", upPct + "%"); $("upScreen").classList.remove("show"); };
 $("okChat").onclick = () => { if (tg) tg.close(); };
 
 // Nov 13: one piece to R2 with live byte progress (fetch cannot report upload progress)
@@ -612,7 +621,8 @@ async function upload(files) {
   $("upThumb").src = URL.createObjectURL(files[0]) + "#t=0.1";
   $("upInfo").textContent = T.app_keep_open; $("upGlow").style.backgroundImage = $("glow").style.backgroundImage;
   $("upScreen").classList.add("show");
-  const progress = add => { sent += add; const p = Math.floor(100 * sent / total); $("ring").style.setProperty("--p", p + "%"); $("upPct").textContent = p + "%";
+  uploading = true; upPct = 0; report("uploading", Math.round(total / 1048576) + " MB");
+  const progress = add => { sent += add; const p = Math.floor(100 * sent / total); upPct = p; $("ring").style.setProperty("--p", p + "%"); $("upPct").textContent = p + "%";
     const speed = sent / Math.max(1, (Date.now() - t0) / 1000), left = (total - sent) / Math.max(speed, 1);
     $("upInfo").textContent = `${(sent / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB · ~${Math.ceil(left)} с ${T.app_left}`; };
   try {
@@ -649,12 +659,14 @@ async function upload(files) {
         body: JSON.stringify({files: files.map(f => ({name: f.name, size: f.size}))})})).json();
       if (!j.ok) throw new Error(j.error || "done");
     }
-    haptic("heavy");
+    haptic("heavy"); uploading = false; report("done");
     $("upScreen").classList.remove("show");
     $("okTitle").textContent = T.app_accepted; $("okText").textContent = T.app_accepted_text; $("okChat").textContent = T.app_to_chat;
     $("okGlow").style.backgroundImage = $("glow").style.backgroundImage; $("okScreen").classList.add("show");
   } catch (e) {
+    uploading = false;
     if (String(e && e.message) === "cancel") return;
+    report("failed", upPct + "% " + (e && e.message || ""));
     showError(T.app_failed, e && e.message && !["network", "start", "done"].includes(e.message) ? e.message : "");
   }
 }
