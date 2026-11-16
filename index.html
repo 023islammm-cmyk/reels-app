@@ -99,12 +99,17 @@ button{font-family:inherit}
 .warn{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,159,10,.16);border:2px solid #ff9f0a;font-size:36px;font-weight:800;color:#ff9f0a}
 @keyframes pop{from{transform:scale(.3);opacity:0}}
 /* Nov 16 (owner): the square button right of "send" (profile / admin panel) and their pages */
-.sendrow{display:flex;gap:8px;align-items:stretch}.sendrow .btnrow{flex:1;min-width:0}
-.me{flex:none;width:84px;border-radius:18px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-family:inherit;font-weight:600;font-size:11.5px;line-height:1.15;padding:6px 4px;text-align:center}
-.me span{font-size:22px;line-height:1}
+.sendrow{display:flex;gap:10px;align-items:stretch}
+.pleft{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.pleft .ptitle{font-size:15px;text-align:center}
+.me{flex:1 1 0;min-width:0;min-height:96px;border-radius:24px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  font-family:inherit;font-weight:600;font-size:12px;line-height:1.15;padding:8px 6px;text-align:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.30);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.me:active{transform:scale(.97)}.me span{line-height:0}
 .pg{position:absolute;inset:0;z-index:30;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 60% at 50% 0%,#3a2b10 0%,#0b0b0d 55%) #0b0b0d;
   padding:calc(var(--top) + 14px) 14px calc(var(--bottom) + 30px)}
-.pg.show{display:block}#pgProfile{z-index:31}
+.pg.show{display:block}#pgProfile{z-index:32}
 .pgtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.pgtop b{font-size:18px}
 .pgx{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px}
 .card2{border-radius:20px;padding:14px;margin-top:12px}
@@ -132,6 +137,8 @@ button{font-family:inherit}
 .urow .a{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#111}
 .urow .n{flex:1;min-width:0}.urow .n b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.urow .n span{font-size:10px;color:var(--muted)}
 .urow .c{font-size:11px;font-weight:700;color:var(--gold);white-space:nowrap;text-align:right}.urow .c small{display:block;color:var(--muted);font-weight:500;font-size:9.5px}
+.stats4 .tap{cursor:pointer}.stats4 .tap span::after{content:" ›"}
+.allrow .urow{padding:9px 4px}.allrow .urow .a{width:32px;height:32px;font-size:13px}.allrow .urow .n b{font-size:14px}.allrow .urow .n span{font-size:11.5px}
 .col2 .none{font-size:11px;color:var(--muted);text-align:center;padding:10px 0}
 
 .bottom{width:100%;max-width:380px;margin-top:auto;display:flex;flex-direction:column;gap:10px}
@@ -224,10 +231,12 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   </div>
   <div class="rail" id="rail"></div>
   <div class="panel glass">
+    <div class="sendrow"><div class="pleft">
     <div class="ptitle" id="ptitle"></div>
     <div class="line" id="colorLine"><span id="colorLbl"></span><span class="dots" id="dots"></span></div>
     <div class="line" id="tfxLine" style="display:none"><span id="tfxLbl"></span><span class="tpick" id="tfxPick"></span></div>
-    <div class="sendrow"><div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div><button class="me glass" id="me" style="display:none"><span id="meIcon">👤</span><small id="meText"></small></button></div>
+    <div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div></div>
+    <button class="me" id="me" style="display:none"><span id="meIcon"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg></span><small id="meText"></small></button></div>
   </div>
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
@@ -265,6 +274,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   </div>
 </div>
 <div class="pg" id="pgProfile"><div class="pgtop"><b id="prTitle"></b><span class="pgx glass" data-pg-close>✕</span></div><div id="prBody"></div></div>
+<div class="pg" id="pgAll" style="z-index:31"><div class="pgtop"><b id="allTitle2"></b><span class="pgx glass" data-pg-close>✕</span></div><div id="allBody"></div></div>
 <div class="pg" id="pgAdmin"><div class="pgtop"><b id="adTitle"></b><span class="pgx glass" data-pg-close>✕</span></div><div id="adBody"></div></div>
 <script>
 const tg = window.Telegram && Telegram.WebApp;
@@ -610,7 +620,7 @@ function pgClose(id) { $(id).classList.remove("show"); }
 document.querySelectorAll("[data-pg-close]").forEach(x => x.onclick = () => { haptic(); pgClose(x.closest(".pg").id); });
 function setupMe() {
   $("me").style.display = "flex";
-  $("meIcon").textContent = D.admin ? "🛠" : "👤"; $("meText").textContent = D.admin ? T.app_admin : T.app_profile;
+  $("meText").textContent = D.admin ? T.app_admin : T.app_profile;
   $("prTitle").textContent = T.app_profile; $("adTitle").textContent = "🛠 " + T.app_admin;
   $("me").onclick = () => { haptic("medium"); D.admin ? openAdmin() : openProfile(); };
 }
@@ -652,6 +662,24 @@ async function openProfile(userId) {
   pgOpen("pgProfile");
 }
 let ADM = null;
+// Nov 16 (owner): «Тіркелген» opens everyone who pressed /start, newest first; tap = that person's profile
+function drawAll() {
+  const q = ($("allFind") ? $("allFind").value : "").trim().toLowerCase();
+  const list = ADM.all.filter(u => !q || String(u.id).includes(q) || (u.name || "").toLowerCase().includes(q) || (u.username || "").toLowerCase().includes(q));
+  $("allList").innerHTML = list.length ? list.map(u => `<div class="urow" data-uid="${u.id}"><div class="a" style="background:${HUES[u.id % HUES.length]}">${esc((u.name || "?").charAt(0).toUpperCase())}</div>`
+    + `<div class="n"><b>${esc(u.name)}${u.username ? ` <span>@${esc(u.username)}</span>` : ""}</b><span>ID ${u.id} · ${esc(u.created)}</span></div>`
+    + `<div class="c">${u.left > 0 ? `${u.left}<small>${esc(u.tariff)}</small>` : `<small>${esc(T.ad_no_tariff)}</small>`}</div></div>`).join("")
+    : `<div class="none">${esc(T.ad_empty)}</div>`;
+  $("allList").querySelectorAll("[data-uid]").forEach(x => x.onclick = () => { haptic(); openProfile(Number(x.dataset.uid)); });
+}
+function openAll() {
+  $("allTitle2").textContent = `${T.ad_all} · ${ADM.all.length}`;
+  $("allBody").innerHTML = `<input class="find glass" id="allFind" type="search" placeholder="🔎 ${esc(T.ad_search)}" style="margin-top:0">`
+    + `<div class="col2 glass allrow" id="allList"></div>`;
+  $("allFind").oninput = drawAll;
+  drawAll();
+  pgOpen("pgAll");
+}
 function userRows(list) {
   if (!list.length) return `<div class="none">${esc(T.ad_empty)}</div>`;
   return list.map(u => `<div class="urow" data-uid="${u.id}"><div class="a" style="background:${HUES[u.id % HUES.length]}">${esc((u.name || "?").charAt(0).toUpperCase())}</div>`
@@ -668,7 +696,7 @@ async function openAdmin() {
   const r = await api("/api/admin", {token: D.token});
   if (!r.ok) return;
   ADM = r;
-  $("adBody").innerHTML = `<div class="stats4"><div class="glass"><b>${r.registered}</b><span>${esc(T.ad_registered)}</span></div>`
+  $("adBody").innerHTML = `<div class="stats4"><div class="glass tap" id="adAllBtn"><b>${r.registered}</b><span>${esc(T.ad_registered)}</span></div>`
     + `<div class="glass"><b>${r.trial.length}</b><span>${esc(T.ad_trial)}</span></div><div class="glass g"><b>${r.paid.length}</b><span>${esc(T.ad_paid)}</span></div>`
     + `<div class="glass"><b>+${r.today}</b><span>${esc(T.ad_today)}</span></div></div>`
     + `<input class="find glass" id="adFind" type="search" placeholder="🔎 ${esc(T.ad_search)}">`
@@ -676,6 +704,7 @@ async function openAdmin() {
     + `<div class="col2 glass"><h5>${esc(T.ad_paid_sub)}<small>${esc(D.tariffs.filter((x, i) => i > 0).map(x => x.name).join(" · "))}</small></h5><div id="adPaid"></div></div></div>`
     + `<div class="hint2" style="margin-top:12px">ℹ️ ${T.ad_hint}</div>`;
   $("adFind").oninput = drawAdminLists;
+  $("adAllBtn").onclick = () => { haptic(); openAll(); };
   drawAdminLists();
   pgOpen("pgAdmin");
 }
