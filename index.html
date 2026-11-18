@@ -426,16 +426,17 @@ function openLooks() {
   document.querySelectorAll("#tfxGrid video").forEach(v => { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); });
 }
 function stopLooks() { document.querySelectorAll("#tfxGrid video").forEach(v => v.pause()); }
-function afterSrc(s) {  // Nov 12: a chosen title look shows its own version of the demo
-  if (s.tfx && tfx !== "auto" && s.looks && s.looks.includes(tfx)) return demoUrl(s.id, `after_fx_${tfx}`);
-  return s.colorPick && s.colors && s.colors.includes(color) ? demoUrl(s.id, `after_${color}`) : demoUrl(s.id, "after");
+function afterSrc(s, ext) {  // Nov 12: a chosen title look shows its own version of the demo
+  // Nov 18: the ending goes inside the name (a «?d=» after it broke every gold/colour demo and poster: 404)
+  if (s.tfx && tfx !== "auto" && s.looks && s.looks.includes(tfx)) return demoUrl(s.id, `after_fx_${tfx}${ext}`);
+  return s.colorPick && s.colors && s.colors.includes(color) ? demoUrl(s.id, `after_${color}${ext}`) : demoUrl(s.id, `after${ext}`);
 }
 function showColour() {  // the demo in the chosen colour, from the same second (Nov 11)
   if (!style || !style.after) return;
-  const vA = $("vAfter"), src = afterSrc(style) + ".mp4";
+  const vA = $("vAfter"), src = afterSrc(style, ".mp4");
   if (vA.src.endsWith(src)) return;
   const t = cur ? cur.currentTime : 0, playing = cur && !cur.paused;
-  setKind("after"); vA.poster = afterSrc(style) + ".jpg"; vA.src = src;
+  setKind("after"); vA.poster = afterSrc(style, ".jpg"); vA.src = src;
   vA.onloadedmetadata = () => { vA.currentTime = Math.min(t, (vA.duration || t + 1) - 0.1); if (playing) vA.play(); vA.onloadedmetadata = null; };
 }
 function renderTariffs() {
@@ -455,8 +456,8 @@ function pick(s) {
   const nm = document.createElement("b"); nm.textContent = label(s);  // Nov 14: "<style> стилінде видео жасау"
   const [a, b] = (T.app_make || "%s").split("%s"); $("ptitle").replaceChildren(a || "", nm, b || "");
   const vA = $("vAfter"), vB = $("vBefore");
-  vA.poster = s.after ? afterSrc(s) + ".jpg" : ""; vB.poster = s.before ? demoUrl(s.id, "before.jpg") : "";
-  vA.src = s.after ? afterSrc(s) + ".mp4" : ""; vB.src = s.before ? demoUrl(s.id, "before.mp4") : "";
+  vA.poster = s.after ? afterSrc(s, ".jpg") : ""; vB.poster = s.before ? demoUrl(s.id, "before.jpg") : "";
+  vA.src = s.after ? afterSrc(s, ".mp4") : ""; vB.src = s.before ? demoUrl(s.id, "before.mp4") : "";
   vA.load(); vB.load();
   const still = s.after ? demoUrl(s.id, "after.jpg") : (s.before ? demoUrl(s.id, "before.jpg") : "");
   if (still) $("glow").style.backgroundImage = `url(${still})`;
