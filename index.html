@@ -530,7 +530,7 @@ $("send").onclick = async () => {
     if (started.need === "tariffs") { $("tarNote").textContent = T.app_no_balance; $("tarNote").style.display = "block"; open("tariffs"); }
     return;
   }
-  if (style.materials) return openMaterials();
+  if (style.materials || style.minFiles < style.files) return openMaterials();  // Nov 19: a range of videos is picked in the sheet
   const input = $("file"); input.accept = style.accept; input.multiple = style.files > 1; input.value = ""; input.click();
 };
 
@@ -540,16 +540,19 @@ function openMaterials() {
   mVideos = []; mPhotos = []; $("mNote").value = ""; $("mErr").textContent = "";
   $("mTitle").textContent = T.app_send; $("mExtra").textContent = T.mat_extra; $("mExtraSub").textContent = T.mat_extra_sub;
   $("mAddText").textContent = T.mat_add; $("mNoteLbl").textContent = T.mat_note; $("mNote").placeholder = T.mat_note_hint;
-  $("mSend").textContent = T.mat_send; renderMat(); open("matSheet");
+  $("mSend").textContent = T.mat_send;
+  // Nov 19 (Креатив 2): only videos here, no photos or note
+  ["mExtra", "mExtraSub", "mAdd", "mThumbs", "mNoteLbl", "mNote"].forEach(id => $(id).style.display = style.materials ? "" : "none");
+  renderMat(); open("matSheet");
 }
 function renderMat() {
-  const need = style.files;
-  $("mVideo").textContent = need > 1 ? `🎬 ${T.mat_videos} ${mVideos.length}/${need}` : (mVideos.length ? "✅ " + T.mat_video_ok : "🎬 " + T.mat_pick_video);
+  const need = style.minFiles || style.files;
+  $("mVideo").textContent = style.files > 1 ? `🎬 ${T.mat_videos} ${mVideos.length}/${need < style.files ? need + "–" + style.files : need}` : (mVideos.length ? "✅ " + T.mat_video_ok : "🎬 " + T.mat_pick_video);
   $("mVideo").classList.toggle("done", mVideos.length >= need);
   $("mThumbs").innerHTML = "";
   mPhotos.forEach((f, i) => { const d = document.createElement("div"); d.style.backgroundImage = `url(${URL.createObjectURL(f)})`;
     const x = document.createElement("i"); x.textContent = "✕"; x.onclick = () => { mPhotos.splice(i, 1); renderMat(); }; d.append(x); $("mThumbs").append(d); });
-  $("mAdd").style.display = mPhotos.length >= 5 ? "none" : "flex";
+  $("mAdd").style.display = !style.materials || mPhotos.length >= 5 ? "none" : "flex";
 }
 $("mVideo").onclick = () => { const input = $("file"); input.accept = style.accept; input.multiple = style.files > 1; input.value = ""; input.dataset.mat = "1"; input.click(); };
 $("mAdd").onclick = () => { $("photos").value = ""; $("photos").click(); };
@@ -559,7 +562,7 @@ function shrink(file) { return new Promise(res => { const img = new Image(); img
   const g = c.getContext("2d"); g.drawImage(img, 0, 0, c.width, c.height);
   c.toBlob(b => res(b || file), /png/i.test(file.type) ? "image/png" : "image/jpeg", .9); }; img.onerror = () => res(file); img.src = URL.createObjectURL(file); }); }
 $("mSend").onclick = async () => {
-  const need = style.files;
+  const need = style.minFiles || style.files;
   if (mVideos.length < need) { $("mErr").textContent = need > 1 ? T.mat_need_videos.replace("%N%", need).replace("%K%", need - mVideos.length) : T.mat_pick_video; return; }
   $("mErr").textContent = ""; $("mSend").disabled = true;
   try {
