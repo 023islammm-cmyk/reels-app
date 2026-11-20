@@ -726,6 +726,13 @@ async function openProfile(userId) {
   $("prBody").innerHTML = profileHtml(r.me, !userId);
   if (!userId) wireTariffs($("prBody")); else $("prBody").querySelectorAll("[data-tar]").forEach(x => x.style.cursor = "default");
   pgOpen("pgProfile");
+  if (userId) adminJs().then(() => window.panelClient($("prBody"), userId)).catch(() => {});  // Nov 21: add videos, write, block
+}
+// Nov 21 (owner): «⚙️ Әкімші панелі» lives in admin.js, loaded only for the admin
+let ADMJS = null;
+function adminJs() {
+  return ADMJS || (ADMJS = new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = HOSTED ? "admin.js" : "/app/admin.js";
+    sc.onload = ok; sc.onerror = () => { ADMJS = null; no(); }; document.body.append(sc); }));
 }
 let ADM = null;
 // Nov 16 (owner): «Тіркелген» opens everyone who pressed /start, newest first; tap = that person's profile
@@ -773,6 +780,7 @@ async function openAdmin() {
   $("adAllBtn").onclick = () => { haptic(); openAll(); };
   drawAdminLists();
   pgOpen("pgAdmin");
+  adminJs().then(() => window.panelTiles($("adBody"))).catch(() => {});
 }
 boot();
 </script>
