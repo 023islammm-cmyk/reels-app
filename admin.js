@@ -191,23 +191,47 @@ textarea.pnIn{min-height:110px;resize:vertical}
 
   // ---------- 📢 broadcast
   async function broadcast() {
-    let group = "all";
+    let group = "all", media = "", mediaKind = "", mediaUrl = "";
     const groups = {all: "Барлық клиентке", with_videos: "Видеосы барларға", no_videos: "Видеосы жоқтарға"};
     const box = open("📢 Хабарлама тарату", `<div class="glass pnCard"><div class="pnLbl" style="margin-top:0">Кімге</div><div class="pnChips">`
       + Object.entries(groups).map(([k, v]) => `<span class="pnChip${k === group ? " on" : ""}" data-g="${k}">${v}</span>`).join("")
       + `</div><div class="pnLbl">Хабарлама</div><textarea class="pnIn" id="pnText" placeholder="Мысалы: Жаңа стиль қосылды!…"></textarea>`
-      + `<div class="pnBtns"><button class="pnB full" id="pnPrev">👁 Алдын ала қарау</button></div></div><div id="pnPreview"></div>`);
+      + `<input type="file" id="pnFile" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime" style="display:none">`
+      + `<div id="pnMedia"></div>`
+      + `<div class="pnBtns"><button class="pnB full" id="pnAttach">📎 Фото не видео қосу</button>`
+      + `<button class="pnB full" id="pnPrev">👁 Алдын ала қарау</button></div></div><div id="pnPreview"></div>`);
+    const mediaHtml = () => !media ? "" : (mediaKind === "photo" ? `<img src="${mediaUrl}" style="width:100%;border-radius:12px;margin-top:8px;display:block">`
+      : `<video src="${mediaUrl}" style="width:100%;border-radius:12px;margin-top:8px;display:block;background:#000" controls playsinline></video>`);
+    const drawMedia = () => {
+      $("pnMedia").innerHTML = media ? mediaHtml() + `<div class="pnSm" style="margin-top:4px">Жазу фото/видеоның астына түседі (1024 таңбаға дейін). <span id="pnDrop" style="color:#ff8f8f;cursor:pointer">✕ Алып тастау</span></div>` : "";
+      $("pnAttach").textContent = media ? "📎 Басқа фото/видео таңдау" : "📎 Фото не видео қосу";
+      if (media) $("pnDrop").onclick = () => { haptic(); media = ""; mediaKind = ""; $("pnFile").value = ""; drawMedia(); $("pnPreview").innerHTML = ""; };
+    };
+    $("pnAttach").onclick = () => { haptic(); $("pnFile").click(); };
+    $("pnFile").onchange = async () => {
+      const file = $("pnFile").files[0]; if (!file) return;
+      const video = file.type.startsWith("video");
+      if (file.size > (video ? 50 : 10) * 1024 * 1024) { $("pnFile").value = ""; return toast(`⚠️ Файл тым үлкен: ${video ? "видео 50" : "фото 10"} МБ-тан аспасын`); }
+      $("pnAttach").textContent = "⏳ Жүктелуде…"; $("pnAttach").disabled = true;
+      const form = new FormData(); form.append("token", D.token); form.append("file", file, file.name);
+      let r = null;
+      try { r = await (await fetch(API + "/api/admin/media", {method: "POST", body: form})).json(); } catch (e) { r = null; }
+      $("pnAttach").disabled = false;
+      if (!r || !r.ok) { $("pnFile").value = ""; drawMedia(); return toast("⚠️ " + ((r && r.error) || "Жүктелмеді, қайта көріңіз")); }
+      if (mediaUrl) URL.revokeObjectURL(mediaUrl);
+      media = r.media; mediaKind = r.kind; mediaUrl = URL.createObjectURL(file); drawMedia(); $("pnPreview").innerHTML = "";
+    };
     box.querySelectorAll("[data-g]").forEach(x => x.onclick = () => { haptic(); group = x.dataset.g; box.querySelectorAll("[data-g]").forEach(y => y.classList.toggle("on", y === x)); $("pnPreview").innerHTML = ""; });
     $("pnPrev").onclick = async () => {
       const text = $("pnText").value.trim();
-      if (!text) return toast("Алдымен хабарлама жазыңыз");
-      const r = await call("broadcast_preview", {group, text});
+      if (!text && !media) return toast("Алдымен хабарлама жазыңыз не фото/видео қосыңыз");
+      const r = await call("broadcast_preview", {group, text, media});
       if (!r || !r.ok) return toast("⚠️ " + ((r && r.error) || "Болмады"));
       const run = r.running && !r.running.done ? `<div class="pnErr">Алдыңғы тарату жүріп жатыр: ${r.running.sent}/${r.running.total}</div>` : "";
-      $("pnPreview").innerHTML = `<div class="glass pnCard"><h4 class="pnSm">Клиент осылай көреді</h4><div class="pnBubble">${esc(r.text)}</div>`
+      $("pnPreview").innerHTML = `<div class="glass pnCard"><h4 class="pnSm">Клиент осылай көреді</h4><div class="pnBubble">${mediaHtml()}${r.text ? `<div style="margin-top:${media ? 6 : 0}px">${esc(r.text)}</div>` : ""}</div>`
         + `<div class="pnRow" style="margin-top:8px"><span>${esc(r.group)}</span><b>${r.count} адам · ~${r.minutes} мин</b></div>${run}`
         + `<div class="pnBtns"><button class="pnB gold full" id="pnSend">📢 Жіберу</button></div></div>`;
-      $("pnSend").onclick = async () => { if (await act("broadcast_send", {group, text})) { $("pnText").value = ""; $("pnPreview").innerHTML = ""; } };
+      $("pnSend").onclick = async () => { if (await act("broadcast_send", {group, text, media})) { $("pnText").value = ""; $("pnPreview").innerHTML = ""; media = ""; $("pnFile").value = ""; drawMedia(); } };
     };
   }
 
