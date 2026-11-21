@@ -291,10 +291,10 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   </div>
   <nav class="nav" id="nav">
     <button class="tab on" id="tabStyles"><b>🎨</b><span id="navStyles"></span></button>
-    <button class="tab" id="tabPod" style="display:none"><b>🎙</b><span id="navPod"></span></button>
+    <button class="tab" id="tabPod"><b>🎙</b><span id="navPod"></span></button>
     <button class="plus" id="plus" aria-label="+">＋</button>
-    <button class="tab" id="tabCre" style="display:none"><b>💡</b><span id="navCre"></span></button>
-    <button class="tab" id="me" style="display:none"><b>👤</b><span id="meText"></span></button>
+    <button class="tab" id="tabCre"><b>💡</b><span id="navCre"></span></button>
+    <button class="tab" id="me"><b>👤</b><span id="meText"></span></button>
   </nav>
   <div class="guide" id="guide"><div class="gdbox glass" role="dialog" aria-modal="true">
     <button class="enx" id="gdX" aria-label="X">✕</button>
@@ -387,9 +387,9 @@ async function boot() {
   T = D.t; document.documentElement.lang = D.lang;
   // Nov 22: the home page's new words, in case the page is newer than the server for a few minutes
   const NEW = D.lang === "ru" ? {app_send_this: "Отправить видео в этом стиле", app_swipe_hint: "следующий стиль", app_act_demo: "Изменить демо",
-    nav_styles: "Стили", nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Перейти в чат"}
+    nav_styles: "Стили", nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Перейти в чат", pod_soon: "Скоро здесь появится подкаст.", pod_ok: "Понятно"}
     : {app_send_this: "Осы стильде видео жіберу", app_swipe_hint: "келесі стиль", app_act_demo: "Демоны өзгерту", nav_styles: "Стильдер",
-    nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Чатқа өту"};
+    nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Чатқа өту", pod_soon: "Жақында мұнда подкаст бөлімі ашылады.", pod_ok: "Түсінікті"};
   Object.keys(NEW).forEach(k => { if (!T[k]) T[k] = NEW[k]; });
   // Nov 12: opened from the chat's "✏️ Түзету" (?order=1031): straight into the editor on that order
   const ORDER = new URLSearchParams(location.search).get("order") || "";
@@ -476,11 +476,12 @@ function setupNav() {
   $("navStyles").textContent = T.nav_styles; $("navPod").textContent = T.nav_podcast; $("navCre").textContent = T.nav_creative;
   $("tabStyles").onclick = () => { haptic(); open("allStyles"); };
   $("plus").onclick = () => $("send").click();
-  // the podcast -> Reels feature is the admin's chat command for now: the tab tells how to use it
-  $("tabPod").style.display = D.admin ? "" : "none";
-  $("podTitle").textContent = "🎙 " + T.nav_podcast + " → Reels"; $("podText").textContent = T.pod_text; $("podChat").textContent = T.pod_chat;
+  // Nov 22 (owner): every client sees all five tabs; what Подкаст opens for clients the owner says later ("soon" till then).
+  // For the admin it tells how to use the /podcast chat command.
+  $("podTitle").textContent = "🎙 " + T.nav_podcast + (D.admin ? " → Reels" : "");
+  $("podText").textContent = D.admin ? T.pod_text : T.pod_soon; $("podChat").textContent = D.admin ? T.pod_chat : T.pod_ok;
   $("tabPod").onclick = () => { haptic(); open("podSheet"); };
-  $("podChat").onclick = () => { if (tg) tg.close(); };
+  $("podChat").onclick = () => { if (D.admin && tg) tg.close(); else close(); };
   $("swipeText").textContent = T.app_swipe_hint;
   let seen = false; try { seen = localStorage.getItem(SWIPE_KEY) === "1"; } catch (e) {}
   $("swipe").style.display = seen || D.styles.length < 2 ? "none" : "";
@@ -490,7 +491,7 @@ function swiped() { $("swipe").style.display = "none"; try { localStorage.setIte
 // Nov 16 (owner): ad creatives are not in the style feed; Nov 22: they open from the «Креатив» tab (the admin only for now)
 function renderCreatives() {
   const list = D.creatives || [];
-  $("tabCre").style.display = list.length ? "" : "none";
+  // Nov 22 (owner): the tab is shown to everyone; a client without creatives sees the "Жақында" tiles
   $("tabCre").onclick = () => { haptic("medium"); open("creSheet"); };
   const g = $("cgrid"); g.innerHTML = "";
   list.forEach((s, i) => {
