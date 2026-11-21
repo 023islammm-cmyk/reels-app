@@ -19,14 +19,14 @@ button{font-family:inherit}
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.glass{background:rgba(28,28,30,.88)}}
 /* Nov 22 (owner, the approved home mockup in docs/mockups, variant 5): every style is one full-screen demo;
    swipe up = the next style, down = the previous one; bottom nav on black with the centre «＋» */
-:root{--nav:62px}
-.feed{position:absolute;top:0;left:0;right:0;bottom:calc(var(--nav) + var(--bottom));overflow:hidden;background:#111;touch-action:none;user-select:none;-webkit-user-select:none}
+:root{--navb:calc(var(--bottom) * .6 + 12px)}  /* Nov 22 (owner): the bar floats this high over the video */
+.feed{position:absolute;inset:0;overflow:hidden;background:#111;touch-action:none;user-select:none;-webkit-user-select:none}
 .track{position:absolute;inset:0;will-change:transform}
 .track.anim{transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .stage{position:absolute;inset:0;overflow:hidden;background:#111}
 .peek{position:absolute;left:0;right:0;top:100%;height:100%;background:#111 center top/cover no-repeat;display:none}
 .peek.show{display:block}
-.shade{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.66));pointer-events:none;z-index:3}
+.shade{position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.66));pointer-events:none;z-index:3}
 .frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:opacity .4s;background:#111}
 .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:30px}
 .top{position:absolute;top:calc(var(--top) + 10px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:6}
@@ -42,7 +42,7 @@ button{font-family:inherit}
 .seg{display:flex;border-radius:999px;padding:3px;gap:2px}
 .seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;cursor:pointer}
 .seg button.on{background:rgba(255,255,255,.92);color:#111}
-.time{position:absolute;left:14px;right:14px;bottom:72px;z-index:6;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #000}
+.time{position:absolute;left:14px;right:14px;bottom:calc(var(--navb) + 142px);z-index:6;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #000}
 .bar{flex:1;position:relative;height:22px;cursor:pointer;touch-action:none}
 .bar::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.3)}
 .bar i{position:absolute;left:0;top:9px;height:4px;width:0;border-radius:4px;background:#fff}
@@ -56,21 +56,25 @@ button{font-family:inherit}
 .swipe span{font-size:11px;font-weight:700;white-space:nowrap}
 @keyframes nudge{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-9px)}}
 /* right edge: Түс / Мәтін эффектісі / Демо (only where the style has them) */
-.acts{position:absolute;right:6px;bottom:150px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:12px}
+.acts{position:absolute;right:6px;bottom:calc(var(--navb) + 218px);z-index:6;display:flex;flex-direction:column;align-items:center;gap:12px}
 .act{width:62px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:700;text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.75);cursor:pointer}
 .act i{font-style:normal;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .act i span{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
-.info{position:absolute;left:14px;right:14px;bottom:72px;z-index:6;display:flex;flex-direction:column;gap:3px;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none}
+.info{position:absolute;left:14px;right:14px;bottom:calc(var(--navb) + 142px);z-index:6;display:flex;flex-direction:column;gap:3px;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none}
 #app.acts-on .info{right:78px}
 .info b{font-size:16px;font-weight:800}
 .info span{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3}
-#send{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;margin:0;height:48px;padding:0 10px;border-radius:16px;font-size:15px}
-.nav{position:absolute;left:0;right:0;bottom:0;height:calc(var(--nav) + var(--bottom));padding-bottom:var(--bottom);background:#000;display:flex;align-items:center;z-index:6;border-top:1px solid rgba(255,255,255,.08)}
-.nav .tab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.6;cursor:pointer;background:none;border:0;color:#fff;font-family:inherit;padding:6px 0}
-.nav .tab b{font-size:19px;line-height:1;font-weight:400}
-.nav .tab span{font-size:10px;font-weight:700;white-space:nowrap}
-.nav .tab.on{opacity:1}.nav .tab.on span{color:var(--gold)}
-.plus{flex:none;width:46px;height:31px;margin:0 10px 4px;border:0;border-radius:9px;background:#fff;color:#000;font-size:23px;font-weight:900;line-height:31px;cursor:pointer;box-shadow:-3px 0 0 #25F4EE,3px 0 0 #FE2C55;font-family:inherit}
+#send{position:absolute;left:12px;right:12px;bottom:calc(var(--navb) + 82px);z-index:6;margin:0;height:48px;padding:0 10px;border-radius:16px;font-size:15px}
+/* Nov 22 (owner, docs/mockups/home-white-nav-maket.html, variant 1): a floating white glass bar, black icons and words */
+.nav{position:absolute;left:12px;right:12px;bottom:var(--navb);height:68px;padding:0 6px;border-radius:999px;display:flex;align-items:center;z-index:6;
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,248,250,.88));-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 10px 30px rgba(0,0,0,.35)}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.nav{background:rgba(250,250,252,.96)}}
+.nav .tab{flex:1;min-width:0;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:0;border-radius:999px;color:#111;font-family:inherit;padding:0;transition:background .2s}
+.nav .tab svg{width:24px;height:24px;fill:none;stroke:#111;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav .tab span{font-size:10.5px;font-weight:700;white-space:nowrap}
+.nav .tab.on{background:rgba(0,0,0,.08)}
+.plus{flex:none;width:48px;height:32px;margin:0 6px;border:0;border-radius:10px;background:#111;color:#fff;font-size:22px;font-weight:800;line-height:32px;cursor:pointer;box-shadow:-3px 0 0 #25F4EE,3px 0 0 #FE2C55;font-family:inherit}
 .plus:active,#send:active{transform:scale(.96)}
 .top .help,.top #bal,.acts,.dotsv,.info{transition:opacity .3s,transform .35s}
 .playing .top .help,.playing .top #bal,.playing .info,.playing .dotsv{opacity:0;pointer-events:none}
@@ -290,11 +294,11 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <button class="cta" id="send"></button>
   </div>
   <nav class="nav" id="nav">
-    <button class="tab on" id="tabStyles"><b>🎨</b><span id="navStyles"></span></button>
-    <button class="tab" id="tabPod"><b>🎙</b><span id="navPod"></span></button>
+    <button class="tab on" id="tabStyles"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span id="navStyles"></span></button>
+    <button class="tab" id="tabPod"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><span id="navPod"></span></button>
     <button class="plus" id="plus" aria-label="+">＋</button>
-    <button class="tab" id="tabCre"><b>💡</b><span id="navCre"></span></button>
-    <button class="tab" id="me"><b>👤</b><span id="meText"></span></button>
+    <button class="tab" id="tabCre"><svg viewBox="0 0 24 24"><path d="M9 17.5h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2V17h5v-1c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span id="navCre"></span></button>
+    <button class="tab" id="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg><span id="meText"></span></button>
   </nav>
   <div class="guide" id="guide"><div class="gdbox glass" role="dialog" aria-modal="true">
     <button class="enx" id="gdX" aria-label="X">✕</button>
