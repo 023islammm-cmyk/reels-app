@@ -385,6 +385,12 @@ async function boot() {
     ? "Бұл батырма ескірген. Чатта /start басып, жаңа «🎬 Видео жіберу» батырмасын басыңыз · Кнопка устарела: нажмите /start в чате и откройте новую кнопку"
     : "Ботта /start басыңыз · Нажмите /start в боте"; return; }
   T = D.t; document.documentElement.lang = D.lang;
+  // Nov 22: the home page's new words, in case the page is newer than the server for a few minutes
+  const NEW = D.lang === "ru" ? {app_send_this: "Отправить видео в этом стиле", app_swipe_hint: "следующий стиль", app_act_demo: "Изменить демо",
+    nav_styles: "Стили", nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Перейти в чат"}
+    : {app_send_this: "Осы стильде видео жіберу", app_swipe_hint: "келесі стиль", app_act_demo: "Демоны өзгерту", nav_styles: "Стильдер",
+    nav_podcast: "Подкаст", nav_creative: "Креатив", nav_profile: "Профиль", pod_text: "/podcast https://youtube.com/...", pod_chat: "Чатқа өту"};
+  Object.keys(NEW).forEach(k => { if (!T[k]) T[k] = NEW[k]; });
   // Nov 12: opened from the chat's "✏️ Түзету" (?order=1031): straight into the editor on that order
   const ORDER = new URLSearchParams(location.search).get("order") || "";
   if (/^\d{1,9}$/.test(ORDER)) {
