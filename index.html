@@ -19,20 +19,26 @@ button{font-family:inherit}
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.glass{background:rgba(28,28,30,.88)}}
 /* Nov 22 (owner, the approved home mockup in docs/mockups, variant 5): every style is one full-screen demo;
    swipe up = the next style, down = the previous one; bottom nav on black with the centre «＋» */
-:root{--navb:calc(var(--bottom) * .6 + 12px)}  /* Nov 22 (owner): the bar floats this high over the video */
-.feed{position:absolute;inset:0;overflow:hidden;background:#111;touch-action:none;user-select:none;-webkit-user-select:none}
+:root{--navb:calc(var(--bottom) * .6 + 12px);
+  --vidh:min(calc(100% - var(--top) - 58px - var(--navb) - 80px), calc((100vw - 16px) * 16 / 9))}  /* the demo's height */  /* Nov 22 (owner): the bar floats this high over the video */
+.feed{position:absolute;inset:0;overflow:hidden;background:transparent;touch-action:none;user-select:none;-webkit-user-select:none}
+/* Nov 22 (owner's drawing): the whole demo fits in the frame between the top bar and the bottom bar, nothing cut */
+.box{position:absolute;left:50%;top:calc(var(--top) + 58px);height:var(--vidh);
+  aspect-ratio:9/16;transform:translateX(-50%);border-radius:22px}
+.over{pointer-events:none;z-index:5}
 .track{position:absolute;inset:0;will-change:transform}
 .track.anim{transition:transform .32s cubic-bezier(.2,.8,.2,1)}
-.stage{position:absolute;inset:0;overflow:hidden;background:#111}
-.peek{position:absolute;left:0;right:0;top:100%;height:100%;background:#111 center top/cover no-repeat;display:none}
+.stage{overflow:hidden;background:#111;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.peek{position:absolute;left:0;right:0;top:100%;height:100%;display:none}
+#peekBox{overflow:hidden;background:#111 center top/cover no-repeat}
 .peek.show{display:block}
-.shade{position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.66));pointer-events:none;z-index:3}
+.shade{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.62));pointer-events:none;z-index:3}
 .frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:opacity .4s;background:#111}
 .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:30px}
 .top{position:absolute;top:calc(var(--top) + 10px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:6}
 .pill{border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center;cursor:pointer}
 .gold{color:var(--gold)}
-.play{position:absolute;left:50%;top:46%;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;transition:opacity .3s,transform .3s;
+.play{position:absolute;left:50%;top:50%;pointer-events:auto;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;transition:opacity .3s,transform .3s;
   background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.30),rgba(255,255,255,.06) 42%,rgba(255,255,255,.02) 70%)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
   border:1.5px solid rgba(255,255,255,.6)!important;box-shadow:inset 0 2px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 8px 26px rgba(0,0,0,.30)!important}
 .play svg{margin-left:4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
@@ -42,13 +48,13 @@ button{font-family:inherit}
 .seg{display:flex;border-radius:999px;padding:3px;gap:2px}
 .seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;cursor:pointer}
 .seg button.on{background:rgba(255,255,255,.92);color:#111}
-.time{position:absolute;left:14px;right:14px;bottom:calc(var(--navb) + 142px);z-index:6;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #000}
+.time{position:absolute;left:12px;right:12px;bottom:10px;z-index:6;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #000}
 .bar{flex:1;position:relative;height:22px;cursor:pointer;touch-action:none}
 .bar::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.3)}
 .bar i{position:absolute;left:0;top:9px;height:4px;width:0;border-radius:4px;background:#fff}
 .bar b{position:absolute;top:4px;left:0;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 /* left edge: which style is open (the current one is a gold bar) */
-.dotsv{position:absolute;left:8px;top:46%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:7px}
+.dotsv{position:absolute;left:7px;top:50%;pointer-events:auto;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:7px}
 .dotsv i{position:relative;display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45);box-shadow:0 0 4px rgba(0,0,0,.5);transition:height .25s,background .25s;cursor:pointer}
 .dotsv i::after{content:"";position:absolute;inset:-4px -10px}
 .dotsv i.on{height:18px;background:var(--gold)}
@@ -60,13 +66,14 @@ button{font-family:inherit}
 .act{width:62px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:700;text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.75);cursor:pointer}
 .act i{font-style:normal;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .act i span{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
-.info{position:absolute;left:14px;right:14px;bottom:calc(var(--navb) + 142px);z-index:6;display:flex;flex-direction:column;gap:3px;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none}
+.info{position:absolute;left:12px;right:12px;bottom:70px;z-index:6;display:flex;flex-direction:column;gap:3px;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none}
 #app.acts-on .info{right:78px}
 .info b{font-size:16px;font-weight:800}
 .info span{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3}
-#send{position:absolute;left:12px;right:12px;bottom:calc(var(--navb) + 82px);z-index:6;margin:0;height:48px;padding:0 10px;border-radius:16px;font-size:15px}
+#send{position:absolute;left:10px;right:10px;bottom:10px;pointer-events:auto;z-index:6;margin:0;height:48px;padding:0 10px;border-radius:16px;font-size:15px}
 /* Nov 22 (owner, docs/mockups/home-white-nav-maket.html, variant 1): a floating white glass bar, black icons and words */
-.nav{position:absolute;left:12px;right:12px;bottom:var(--navb);height:68px;padding:0 6px;border-radius:999px;display:flex;align-items:center;z-index:6;
+/* Nov 22 (owner): the bar sits just under the demo (10px), never lower than its own place at the bottom */
+.nav{position:absolute;left:12px;right:12px;bottom:max(var(--navb), calc(100% - var(--top) - 58px - var(--vidh) - 78px));height:68px;padding:0 6px;border-radius:999px;display:flex;align-items:center;z-index:6;
   background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,248,250,.88));-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
   border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 10px 30px rgba(0,0,0,.35)}
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.nav{background:rgba(250,250,252,.96)}}
@@ -76,8 +83,10 @@ button{font-family:inherit}
 .nav .tab.on{background:rgba(0,0,0,.08)}
 .plus{flex:none;width:48px;height:32px;margin:0 6px;border:0;border-radius:10px;background:#111;color:#fff;font-size:22px;font-weight:800;line-height:32px;cursor:pointer;box-shadow:-3px 0 0 #25F4EE,3px 0 0 #FE2C55;font-family:inherit}
 .plus:active,#send:active{transform:scale(.96)}
-.top .help,.top #bal,.acts,.dotsv,.info{transition:opacity .3s,transform .35s}
-.playing .top .help,.playing .top #bal,.playing .info,.playing .dotsv{opacity:0;pointer-events:none}
+.top,#send,.acts,.dotsv,.info{transition:opacity .3s,transform .35s}
+/* Nov 22 (owner): while the demo plays only the clean video is left; a tap anywhere stops it and everything comes back */
+.playing .top,.playing #send,.playing .info,.playing .dotsv{opacity:0;pointer-events:none}
+.shade{transition:opacity .3s}.playing .shade{opacity:0}  /* the dark fade would hide the demo's own subtitles */
 .playing .acts{opacity:0;transform:translateX(70px);pointer-events:none}
 .playing .swipe{display:none}
 .playing .play{opacity:0;transform:scale(.6);pointer-events:none}
@@ -268,30 +277,34 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   <div class="glow" id="glow"></div>
   <div class="feed" id="feed">
     <div class="track" id="track">
-      <div class="stage">
+      <div class="stage box">
         <video class="frame" id="vAfter" playsinline preload="auto"></video>
         <video class="frame" id="vBefore" playsinline preload="metadata" style="opacity:0"></video>
+        <div class="shade"></div>
         <div class="spin" id="spin"></div>
         <div class="empty" id="empty" style="display:none"></div>
       </div>
-      <div class="peek" id="peek"></div>
+      <div class="peek" id="peek"><div class="box" id="peekBox"></div></div>
     </div>
     <video id="vNext" muted playsinline preload="auto" style="display:none"></video>
-    <div class="shade"></div>
+    <div class="over box">
     <div class="play glass" id="play"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></div>
+    </div>
     <div class="top"><div class="pill glass help" id="help">?</div>
       <div class="seg glass" id="seg"><button data-k="before" id="bBefore"></button><button class="on" data-k="after" id="bAfter"></button></div>
       <div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
-    <div class="dotsv" id="dotsv"></div>
-    <div class="swipe" id="swipe" style="display:none">↑<span id="swipeText"></span></div>
     <div class="acts" id="acts" style="display:none">
       <div class="act" id="colorLine"><i><span id="actSwatch"></span></i><span id="colorLbl"></span></div>
       <div class="act" id="tfxLine"><i>✨</i><span id="tfxLbl"></span></div>
       <div class="act" id="tryDemo"><i>✏️</i><span id="tryText"></span></div>
     </div>
+    <div class="over box">
+    <div class="dotsv" id="dotsv"></div>
+    <div class="swipe" id="swipe" style="display:none">↑<span id="swipeText"></span></div>
     <div class="info"><b id="sName"></b><span id="sWho"></span></div>
     <div class="time" id="time"><div class="bar" id="bar"><i id="fill"></i><b id="knob"></b></div><span id="sec">0:00</span></div>
     <button class="cta" id="send"></button>
+    </div>
   </div>
   <nav class="nav" id="nav">
     <button class="tab on" id="tabStyles"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span id="navStyles"></span></button>
@@ -611,7 +624,6 @@ function stop() { $("vAfter").pause(); $("vBefore").pause(); $("app").classList.
 $("play").onclick = play;
 ["vAfter", "vBefore"].forEach(id => {
   const v = $(id);
-  v.onclick = () => { if (Date.now() - lastSwipe < 400) return; $("app").classList.contains("playing") ? stop() : play(); };
   v.ontimeupdate = () => { if (v !== cur || dragging) return; show(v.currentTime / (v.duration || 1)); $("sec").textContent = fmt(v.currentTime); };
   v.onended = () => { v.currentTime = 0; stop(); };
 });
@@ -640,10 +652,10 @@ function preloadNext() {
 (function swipe() {
   const feed = $("feed"), track = $("track"), peek = $("peek");
   let y0 = null, dy = 0, t0 = 0, dir = 0, busy = false, wheelLock = false, id = null;
-  const skip = e => e.target.closest("#bar,.acts,.dotsv,.top,#send,.play");
+  const skip = e => e.target.closest("#bar,.time,.acts,.dotsv,.top,#send,.play");
   function show(d) {
     if (d === dir) return; dir = d; const img = still(styleAt(d));
-    peek.style.top = d > 0 ? "100%" : "-100%"; peek.style.backgroundImage = img ? `url("${img}")` : "none"; peek.classList.add("show");
+    peek.style.top = d > 0 ? "100%" : "-100%"; $("peekBox").style.backgroundImage = img ? `url("${img}")` : "none"; peek.classList.add("show");
   }
   function reset() { track.classList.remove("anim"); track.style.transform = ""; peek.classList.remove("show"); dir = 0; }
   function back() { track.classList.add("anim"); track.style.transform = ""; setTimeout(reset, 330); }
@@ -652,6 +664,9 @@ function preloadNext() {
     show(d); haptic(); swiped(); track.classList.add("anim"); track.style.transform = `translateY(${d > 0 ? -100 : 100}%)`;
     setTimeout(() => { pick(styleAt(d)); reset(); busy = false; play(); }, 330);  // the new style starts by itself
   }
+  // Nov 22 (owner): a tap anywhere on the demo stops it (the play sign and all the buttons come back) or plays it
+  feed.addEventListener("click", e => { if (Date.now() - lastSwipe < 400 || skip(e) || !style) return;
+    $("app").classList.contains("playing") ? stop() : play(); });
   feed.addEventListener("pointerdown", e => {
     if (busy || y0 !== null || !D || !D.styles || D.styles.length < 2 || skip(e) || document.querySelector("#app.open")) return;
     y0 = e.clientY; dy = 0; t0 = Date.now(); id = e.pointerId;
