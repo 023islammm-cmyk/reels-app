@@ -229,6 +229,29 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 .mnote{width:100%;min-height:64px;border-radius:14px;padding:10px 12px;font:14px/1.4 -apple-system,"Segoe UI",sans-serif;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.2);resize:none;outline:0}
 .merr{color:#ff9f0a;font-size:12.5px;margin-top:8px;min-height:16px}
 </style>
+<style id="guideCss">
+/* Nov 22 (owner): the one-page guide shown on the first opening; X or the button goes to the main page */
+.guide{position:absolute;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.guide.show{display:flex}
+.gdbox{position:relative;width:100%;max-width:380px;max-height:calc(100% - var(--top) - var(--bottom) - 20px);overflow-y:auto;border-radius:28px;padding:24px 18px 16px;animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+.gdbox .enx{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;font-size:14px;cursor:pointer}
+.gdh{font-size:22px;font-weight:800;color:var(--gold);text-align:center;padding:0 30px}
+.gdl{font-size:14px;line-height:1.45;font-weight:500;text-align:center;color:rgba(255,255,255,.88);margin:8px 6px 0}
+.gds{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.55);margin:16px 2px 8px}
+.gdst{display:flex;flex-direction:column;gap:7px}
+.gdstep{display:flex;gap:11px;align-items:center;background:rgba(0,0,0,.28);border-radius:14px;padding:9px 11px;text-align:left}
+.gdstep i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#1a1206;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.gdstep b,.gdtip b{display:block;font-size:14px;font-weight:700;line-height:1.25}
+.gdstep span{display:block;font-size:11.5px;color:rgba(255,255,255,.62);line-height:1.35;margin-top:1px}
+.gdtips{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.gdtip{background:rgba(0,0,0,.28);border-radius:14px;padding:9px 10px;display:grid;grid-template-columns:24px 1fr;column-gap:7px;align-items:center;text-align:left}
+.gdtip em{font-style:normal;font-size:18px;grid-row:span 2}
+.gdtip b{font-size:12.5px;line-height:1.2}
+.gdtip span{font-size:10.5px;color:rgba(255,255,255,.6);line-height:1.3}
+.gdbox .cta{display:block;width:100%;margin:16px 0 0}
+.gdf{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-top:10px;line-height:1.4}
+.pill.help{padding:8px 12px;font-weight:800;color:var(--gold)}
+</style>
 </head>
 <body>
 <div id="app">
@@ -240,7 +263,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="empty" id="empty" style="display:none"></div>
     <div class="play glass" id="play"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></div>
     <div class="time" id="time"><div class="bar" id="bar"><i id="fill"></i><b id="knob"></b></div><span id="sec">0:00</span></div>
-    <div class="top"><div class="pill glass">Reels Монтаж</div><div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
+    <div class="top"><div style="display:flex;gap:6px"><div class="pill glass">Reels Монтаж</div><div class="pill glass help" id="help">?</div></div><div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
     <div class="lamp" id="lamp" style="display:none">💡</div>
     <div class="stylename glass" id="sname"></div>
     <div class="seg glass segc"><button data-k="before" id="bBefore"></button><button class="on" data-k="after" id="bAfter"></button></div>
@@ -254,6 +277,20 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div></div>
     <button class="me" id="me" style="display:none"><span id="meIcon"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg></span><small id="meText"></small></button></div>
   </div>
+  <div class="guide" id="guide"><div class="gdbox glass" role="dialog" aria-modal="true">
+    <button class="enx" id="gdX" aria-label="X">✕</button>
+    <div class="gdh" id="gdTitle"></div><div class="gdl" id="gdLead"></div>
+    <div class="gds" id="gdHow"></div>
+    <div class="gdst"><div class="gdstep"><i>1</i><div><b id="gdS1"></b><span id="gdS1s"></span></div></div>
+      <div class="gdstep"><i>2</i><div><b id="gdS2"></b><span id="gdS2s"></span></div></div>
+      <div class="gdstep"><i>3</i><div><b id="gdS3"></b><span id="gdS3s"></span></div></div></div>
+    <div class="gds" id="gdFilm"></div>
+    <div class="gdtips"><div class="gdtip"><em>📱</em><b id="gdT1"></b><span id="gdT1s"></span></div>
+      <div class="gdtip"><em>⏱</em><b id="gdT2"></b><span id="gdT2s"></span></div>
+      <div class="gdtip"><em>🎙</em><b id="gdT3"></b><span id="gdT3s"></span></div>
+      <div class="gdtip"><em>🙂</em><b id="gdT4"></b><span id="gdT4s"></span></div></div>
+    <button class="cta" id="gdOk"></button><div class="gdf" id="gdFoot"></div>
+  </div></div>
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
   <div class="sheet glass" id="tfxSheet"><h3><span id="tfxTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="tfxHint"></div><div class="tgrid" id="tfxGrid"></div></div>
@@ -361,6 +398,32 @@ async function boot() {
   D.creatives = D.styles.filter(s => s.creative); D.styles = D.styles.filter(s => !s.creative);
   renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives();
   pick(D.styles[0]);
+  setupGuide();
+}
+
+// ---------- Nov 22 (owner): the one-page guide - on the first opening, again from «?»; X or the button closes it
+const GUIDE_KEY = "guide_seen_v1";
+function setupGuide() {
+  [["gdTitle", "gd_title"], ["gdLead", "gd_lead"], ["gdHow", "gd_how"], ["gdFilm", "gd_film"], ["gdOk", "gd_ok"], ["gdFoot", "gd_foot"],
+   ["gdS1", "gd_s1"], ["gdS1s", "gd_s1_sub"], ["gdS2", "gd_s2"], ["gdS2s", "gd_s2_sub"], ["gdS3", "gd_s3"], ["gdS3s", "gd_s3_sub"],
+   ["gdT1", "gd_t1"], ["gdT1s", "gd_t1_sub"], ["gdT2", "gd_t2"], ["gdT2s", "gd_t2_sub"], ["gdT3", "gd_t3"], ["gdT3s", "gd_t3_sub"],
+   ["gdT4", "gd_t4"], ["gdT4s", "gd_t4_sub"]].forEach(([id, key]) => { $(id).textContent = T[key] || ""; });
+  const hide = () => { haptic(); $("guide").classList.remove("show"); seenGuide(); };
+  $("gdX").onclick = hide; $("gdOk").onclick = hide;
+  $("guide").onclick = e => { if (e.target === $("guide")) hide(); };
+  $("help").onclick = () => { haptic(); $("guide").classList.add("show"); };
+  let seen = false;
+  try { seen = localStorage.getItem(GUIDE_KEY) === "1"; } catch (e) {}
+  if (seen) return;
+  const cloud = typeof tg !== "undefined" && tg && tg.CloudStorage;  // kept by Telegram for the client, on every phone
+  if (cloud && cloud.getItem) {
+    try { cloud.getItem(GUIDE_KEY, (err, value) => { if (value === "1") seenGuide(); else $("guide").classList.add("show"); }); return; } catch (e) {}
+  }
+  $("guide").classList.add("show");
+}
+function seenGuide() {
+  try { localStorage.setItem(GUIDE_KEY, "1"); } catch (e) {}
+  try { if (typeof tg !== "undefined" && tg && tg.CloudStorage && tg.CloudStorage.setItem) tg.CloudStorage.setItem(GUIDE_KEY, "1"); } catch (e) {}
 }
 
 function renderRail() {
