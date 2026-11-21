@@ -17,53 +17,74 @@ button{font-family:inherit}
 .glass{background:linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.06));backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);
   border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 30px rgba(0,0,0,.25)}
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.glass{background:rgba(28,28,30,.88)}}
-.stage{position:absolute;top:0;left:0;right:0;height:min(calc(100vw * 16 / 9), calc(100% - 132px - var(--bottom)));border-radius:0 0 30px 30px;overflow:hidden;background:#111;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+/* Nov 22 (owner, the approved home mockup in docs/mockups, variant 5): every style is one full-screen demo;
+   swipe up = the next style, down = the previous one; bottom nav on black with the centre «＋» */
+:root{--nav:62px}
+.feed{position:absolute;top:0;left:0;right:0;bottom:calc(var(--nav) + var(--bottom));overflow:hidden;background:#111;touch-action:none;user-select:none;-webkit-user-select:none}
+.track{position:absolute;inset:0;will-change:transform}
+.track.anim{transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.stage{position:absolute;inset:0;overflow:hidden;background:#111}
+.peek{position:absolute;left:0;right:0;top:100%;height:100%;background:#111 center top/cover no-repeat;display:none}
+.peek.show{display:block}
+.shade{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.66));pointer-events:none;z-index:3}
 .frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:opacity .4s;background:#111}
 .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:30px}
-.top{position:absolute;top:calc(var(--top) + 10px);left:14px;right:14px;display:flex;justify-content:space-between;z-index:4}
+.top{position:absolute;top:calc(var(--top) + 10px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:6}
 .pill{border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center;cursor:pointer}
 .gold{color:var(--gold)}
-.play{position:absolute;left:50%;top:50%;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;transition:opacity .3s,transform .3s;
+.play{position:absolute;left:50%;top:46%;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;transition:opacity .3s,transform .3s;
   background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.30),rgba(255,255,255,.06) 42%,rgba(255,255,255,.02) 70%)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
   border:1.5px solid rgba(255,255,255,.6)!important;box-shadow:inset 0 2px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 8px 26px rgba(0,0,0,.30)!important}
 .play svg{margin-left:4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
 .play::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid rgba(255,209,92,.9);animation:invite 1.6s ease-out infinite;pointer-events:none}
 @keyframes invite{0%{transform:scale(1);opacity:.9}80%,100%{transform:scale(1.55);opacity:0}}
 .play svg{animation:beat 1.6s ease-in-out infinite}@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.12)}30%{transform:scale(1)}}
-.stylename{display:none!important;position:absolute;left:12px;bottom:10px;z-index:4;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600}
 .seg{display:flex;border-radius:999px;padding:3px;gap:2px}
-.seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:7px 13px;border-radius:999px;cursor:pointer}
+.seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;cursor:pointer}
 .seg button.on{background:rgba(255,255,255,.92);color:#111}
-.segc{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;z-index:6}.segc button{font-size:14px;padding:8px 18px}
-.time{position:absolute;left:16px;right:16px!important;bottom:62px;z-index:5;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transform:translateY(10px);transition:.35s;pointer-events:none;white-space:nowrap}
+.time{position:absolute;left:14px;right:14px;bottom:72px;z-index:6;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #000}
 .bar{flex:1;position:relative;height:22px;cursor:pointer;touch-action:none}
 .bar::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.3)}
 .bar i{position:absolute;left:0;top:9px;height:4px;width:0;border-radius:4px;background:#fff}
 .bar b{position:absolute;top:4px;left:0;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
-.rail{position:absolute;right:8px;top:calc(var(--top) + 62px);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 5px;border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:.5px solid rgba(255,255,255,.35);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+/* left edge: which style is open (the current one is a gold bar) */
+.dotsv{position:absolute;left:8px;top:46%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:7px}
+.dotsv i{position:relative;display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45);box-shadow:0 0 4px rgba(0,0,0,.5);transition:height .25s,background .25s;cursor:pointer}
+.dotsv i::after{content:"";position:absolute;inset:-4px -10px}
+.dotsv i.on{height:18px;background:var(--gold)}
+.swipe{position:absolute;left:50%;top:62%;z-index:5;display:flex;flex-direction:column;align-items:center;font-size:22px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.6);pointer-events:none;animation:nudge 1.6s ease-in-out infinite}
+.swipe span{font-size:11px;font-weight:700;white-space:nowrap}
+@keyframes nudge{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-9px)}}
+/* right edge: Түс / Мәтін эффектісі / Демо (only where the style has them) */
+.acts{position:absolute;right:6px;bottom:150px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:12px}
+.act{width:62px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:700;text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.75);cursor:pointer}
+.act i{font-style:normal;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.act i span{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.info{position:absolute;left:14px;right:14px;bottom:72px;z-index:6;display:flex;flex-direction:column;gap:3px;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none}
+#app.acts-on .info{right:78px}
+.info b{font-size:16px;font-weight:800}
+.info span{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3}
+#send{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;margin:0;height:48px;padding:0 10px;border-radius:16px;font-size:15px}
+.nav{position:absolute;left:0;right:0;bottom:0;height:calc(var(--nav) + var(--bottom));padding-bottom:var(--bottom);background:#000;display:flex;align-items:center;z-index:6;border-top:1px solid rgba(255,255,255,.08)}
+.nav .tab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.6;cursor:pointer;background:none;border:0;color:#fff;font-family:inherit;padding:6px 0}
+.nav .tab b{font-size:19px;line-height:1;font-weight:400}
+.nav .tab span{font-size:10px;font-weight:700;white-space:nowrap}
+.nav .tab.on{opacity:1}.nav .tab.on span{color:var(--gold)}
+.plus{flex:none;width:46px;height:31px;margin:0 10px 4px;border:0;border-radius:9px;background:#fff;color:#000;font-size:23px;font-weight:900;line-height:31px;cursor:pointer;box-shadow:-3px 0 0 #25F4EE,3px 0 0 #FE2C55;font-family:inherit}
+.plus:active,#send:active{transform:scale(.96)}
+.top .help,.top #bal,.acts,.dotsv,.info{transition:opacity .3s,transform .35s}
+.playing .top .help,.playing .top #bal,.playing .info,.playing .dotsv{opacity:0;pointer-events:none}
+.playing .acts{opacity:0;transform:translateX(70px);pointer-events:none}
+.playing .swipe{display:none}
+.playing .play{opacity:0;transform:scale(.6);pointer-events:none}
+.playing .time{opacity:1;pointer-events:auto}
 .dotst{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;position:relative;
   background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.22);transition:transform .25s,border-color .25s,background .25s}
 .dotst.on{border:1.5px solid var(--gold);background:rgba(255,209,92,.18);transform:scale(1.06);box-shadow:0 0 12px rgba(255,209,92,.45)}
-.dname{position:absolute;right:calc(100% + 16px);top:50%;margin-top:-13px;height:26px;line-height:26px;padding:0 11px;border-radius:999px;white-space:nowrap;font-size:12.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.42);border:.5px solid rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-shadow:0 1px 3px rgba(0,0,0,.5);opacity:0}
-.dotst.on .dname{color:#1a1300;background:linear-gradient(180deg,#FFE08A,#F2A91C);border-color:transparent;text-shadow:none}
-@keyframes nameIn{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
-#app:not(.playing) .rail .dname{animation:nameIn .5s cubic-bezier(.2,.8,.2,1) both}
-#app:not(.playing) .rail .dotst:nth-child(2) .dname{animation-delay:.07s}#app:not(.playing) .rail .dotst:nth-child(3) .dname{animation-delay:.14s}#app:not(.playing) .rail .dotst:nth-child(4) .dname{animation-delay:.21s}
-.more{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;background:rgba(255,255,255,.10)}
-.top,.rail,.stylename{transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
-.playing .top{transform:translateY(-120px);opacity:0}.playing .rail{transform:translateX(90px);opacity:0}
-.playing .stylename{transform:translateY(70px);opacity:0}.playing .play{opacity:0;transform:scale(.6);pointer-events:none}
-.playing .time{opacity:1;transform:none;pointer-events:auto}
-.panel{position:absolute;left:14px;right:14px;bottom:calc(var(--bottom) + 14px);border-radius:26px;padding:10px 12px;display:flex;flex-direction:column;align-items:stretch;gap:8px;z-index:4}
-.panel .line,#tryDemo{display:none!important}
-.ptitle{font-size:17px;font-weight:800;text-align:center;line-height:1.25;text-wrap:balance}
-.ptitle b{background:linear-gradient(180deg,#FFE9A8,#F5B52B);-webkit-background-clip:text;background-clip:text;color:transparent}
-.panel .btnrow{margin:0}.panel .btnrow .cta{padding:13px;border-radius:18px}
-.line{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500}
 .dots{display:flex;gap:8px}
 .dot{width:24px;height:24px;border-radius:50%;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .dot.on{outline:2px solid #fff;outline-offset:2px}
+#colorSheet .dots{justify-content:center;gap:14px;padding:6px 0 10px}#colorSheet .dot{width:38px;height:38px}
 .tpick{display:flex;align-items:center;gap:5px;border-radius:999px;padding:5px 12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,209,92,.6);font-size:13px;font-weight:700;color:var(--gold);cursor:pointer}
 .tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .tile{position:relative;height:108px;padding-bottom:22px;border-radius:18px;overflow:hidden;background:#0b0b0e;border:1px solid rgba(255,255,255,.14);cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center}
@@ -76,12 +97,6 @@ button{font-family:inherit}
   background:linear-gradient(180deg,#FFE08A,#F5B52B);color:#2a1d00;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 24px rgba(245,181,43,.35)}
 .ghost{border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:13px;font-weight:700;font-size:15px;background:rgba(255,255,255,.10);color:#fff;cursor:pointer;width:100%}
 .veil{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:7;opacity:0;pointer-events:none;transition:.3s}
-/* Nov 16 (owner): admin-only «Креативтер» lamp under «Reels Монтаж» and its sheet */
-.lamp{position:absolute;top:calc(var(--top) + 62px);left:14px;width:52px;height:52px;border-radius:50%;z-index:4;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:24px;background:radial-gradient(circle at 50% 45%,rgba(255,214,90,.55),rgba(255,214,90,.08) 70%);
-  border:1px solid rgba(255,225,130,.8);box-shadow:0 0 18px rgba(255,205,70,.55);animation:lampglow 1.6s ease-in-out infinite}
-@keyframes lampglow{0%,100%{box-shadow:0 0 6px rgba(255,205,70,.25);filter:brightness(.8)}50%{box-shadow:0 0 26px rgba(255,205,70,.9);filter:brightness(1.25)}}
-.playing .lamp{transform:translateY(-120px);opacity:0}.lamp{transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
 .cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .ctile{border-radius:22px;padding:14px 12px;min-height:118px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
   display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
@@ -112,15 +127,6 @@ button{font-family:inherit}
 /* Nov 16: while a demo loads a ring turns, so the screen is never just black */
 .spin{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;z-index:6;pointer-events:none;border:3px solid rgba(255,255,255,.18);border-top-color:var(--gold);animation:turn .8s linear infinite;display:none}
 #app.buffering .spin{display:block}@keyframes turn{to{transform:rotate(360deg)}}
-/* Nov 16 (owner): the square button right of "send" (profile / admin panel) and their pages */
-.sendrow{display:flex;gap:10px;align-items:stretch}
-.pleft{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
-.pleft .ptitle{font-size:15px;text-align:center}
-.me{flex:1 1 0;min-width:0;min-height:96px;border-radius:24px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;
-  font-family:inherit;font-weight:600;font-size:12px;line-height:1.15;padding:8px 6px;text-align:center;
-  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.30);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.me:active{transform:scale(.97)}.me span{line-height:0}
 .pg{position:absolute;inset:0;z-index:30;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 60% at 50% 0%,#3a2b10 0%,#0b0b0d 55%) #0b0b0d;
   padding:calc(var(--top) + 14px) 14px calc(var(--bottom) + 30px)}
 .pg.show{display:block}#pgProfile{z-index:32}
@@ -250,33 +256,46 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 .gdtip span{font-size:10.5px;color:rgba(255,255,255,.6);line-height:1.3}
 .gdbox .cta{display:block;width:100%;margin:16px 0 0}
 .gdf{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-top:10px;line-height:1.4}
-.pill.help{padding:8px 12px;font-weight:800;color:var(--gold)}
+.pill.help{width:36px;height:36px;padding:0;justify-content:center;font-size:16px;font-weight:800;color:var(--gold)}
 </style>
 </head>
 <body>
 <div id="app">
   <div class="glow" id="glow"></div>
-  <div class="stage">
-    <video class="frame" id="vAfter" playsinline preload="auto"></video>
-    <video class="frame" id="vBefore" playsinline preload="auto" style="opacity:0"></video>
-    <div class="spin" id="spin"></div>
-    <div class="empty" id="empty" style="display:none"></div>
+  <div class="feed" id="feed">
+    <div class="track" id="track">
+      <div class="stage">
+        <video class="frame" id="vAfter" playsinline preload="auto"></video>
+        <video class="frame" id="vBefore" playsinline preload="metadata" style="opacity:0"></video>
+        <div class="spin" id="spin"></div>
+        <div class="empty" id="empty" style="display:none"></div>
+      </div>
+      <div class="peek" id="peek"></div>
+    </div>
+    <video id="vNext" muted playsinline preload="auto" style="display:none"></video>
+    <div class="shade"></div>
     <div class="play glass" id="play"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></div>
+    <div class="top"><div class="pill glass help" id="help">?</div>
+      <div class="seg glass" id="seg"><button data-k="before" id="bBefore"></button><button class="on" data-k="after" id="bAfter"></button></div>
+      <div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
+    <div class="dotsv" id="dotsv"></div>
+    <div class="swipe" id="swipe" style="display:none">↑<span id="swipeText"></span></div>
+    <div class="acts" id="acts" style="display:none">
+      <div class="act" id="colorLine"><i><span id="actSwatch"></span></i><span id="colorLbl"></span></div>
+      <div class="act" id="tfxLine"><i>✨</i><span id="tfxLbl"></span></div>
+      <div class="act" id="tryDemo"><i>✏️</i><span id="tryText"></span></div>
+    </div>
+    <div class="info"><b id="sName"></b><span id="sWho"></span></div>
     <div class="time" id="time"><div class="bar" id="bar"><i id="fill"></i><b id="knob"></b></div><span id="sec">0:00</span></div>
-    <div class="top"><div style="display:flex;gap:6px"><div class="pill glass">Reels Монтаж</div><div class="pill glass help" id="help">?</div></div><div class="pill glass" id="bal"><span class="gold">●</span> <span id="balText">…</span></div></div>
-    <div class="lamp" id="lamp" style="display:none">💡</div>
-    <div class="stylename glass" id="sname"></div>
-    <div class="seg glass segc"><button data-k="before" id="bBefore"></button><button class="on" data-k="after" id="bAfter"></button></div>
+    <button class="cta" id="send"></button>
   </div>
-  <div class="rail" id="rail"></div>
-  <div class="panel glass">
-    <div class="sendrow"><div class="pleft">
-    <div class="ptitle" id="ptitle"></div>
-    <div class="line" id="colorLine"><span id="colorLbl"></span><span class="dots" id="dots"></span></div>
-    <div class="line" id="tfxLine" style="display:none"><span id="tfxLbl"></span><span class="tpick" id="tfxPick"></span></div>
-    <div class="btnrow"><button class="ghost" id="tryDemo"></button><button class="cta" id="send"></button></div></div>
-    <button class="me" id="me" style="display:none"><span id="meIcon"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg></span><small id="meText"></small></button></div>
-  </div>
+  <nav class="nav" id="nav">
+    <button class="tab on" id="tabStyles"><b>🎨</b><span id="navStyles"></span></button>
+    <button class="tab" id="tabPod" style="display:none"><b>🎙</b><span id="navPod"></span></button>
+    <button class="plus" id="plus" aria-label="+">＋</button>
+    <button class="tab" id="tabCre" style="display:none"><b>💡</b><span id="navCre"></span></button>
+    <button class="tab" id="me" style="display:none"><b>👤</b><span id="meText"></span></button>
+  </nav>
   <div class="guide" id="guide"><div class="gdbox glass" role="dialog" aria-modal="true">
     <button class="enx" id="gdX" aria-label="X">✕</button>
     <div class="gdh" id="gdTitle"></div><div class="gdl" id="gdLead"></div>
@@ -293,6 +312,8 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   </div></div>
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
+  <div class="sheet glass" id="colorSheet"><h3><span id="colorTitle"></span><span class="x" data-close>✕</span></h3><div class="dots" id="dots"></div></div>
+  <div class="sheet glass" id="podSheet"><h3><span id="podTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="podText"></div><button class="cta" id="podChat" style="width:100%"></button></div>
   <div class="sheet glass" id="tfxSheet"><h3><span id="tfxTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="tfxHint"></div><div class="tgrid" id="tfxGrid"></div></div>
   <div class="sheet glass" id="creSheet"><h3><span>💡 Креативтер</span><span class="x" data-close>✕</span></h3><div class="cgrid" id="cgrid"></div></div>
   <div class="sheet glass" id="allStyles"><h3><span id="allTitle"></span><span class="x" data-close>✕</span></h3><div class="grid" id="grid"></div></div>
@@ -357,7 +378,8 @@ async function api(path, body) {
 
 async function boot() {
   if (tg) { try { tg.ready(); tg.expand(); if (tg.requestFullscreen && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0")) tg.requestFullscreen();
-    tg.setHeaderColor && tg.setHeaderColor("#000000"); tg.setBackgroundColor && tg.setBackgroundColor("#000000"); } catch (e) {} }
+    tg.setHeaderColor && tg.setHeaderColor("#000000"); tg.setBackgroundColor && tg.setBackgroundColor("#000000");
+    tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {} }  // Nov 22: a swipe down shows the previous style, never closes the app
   D = await api("/api/init", {initData: tg ? tg.initData : ""});
   if (!D.ok) { $("empty").style.display = "flex"; $("empty").textContent = D.offline
     ? "Бұл батырма ескірген. Чатта /start басып, жаңа «🎬 Видео жіберу» батырмасын басыңыз · Кнопка устарела: нажмите /start в чате и откройте новую кнопку"
@@ -386,7 +408,8 @@ async function boot() {
       s.plan = s.plan && f.includes("plan"); });
   }
   $("bBefore").textContent = T.app_before; $("bAfter").textContent = T.app_after;
-  $("colorLbl").textContent = T.app_color; $("send").textContent = T.app_send; setupMe(); $("tryDemo").textContent = T.btn_try_demo;
+  $("colorLbl").textContent = T.app_color; $("colorTitle").textContent = T.app_color; $("send").textContent = "🎬 " + T.app_send_this;
+  setupMe(); $("tryText").textContent = T.app_act_demo;
   $("tryDemo").onclick = async () => {  // the editor's code arrives only when it is needed
     if (!window.openTry) await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = HOSTED ? "editor.js" : "/app/editor.js"; sc.onload = ok; sc.onerror = no; document.body.append(sc); });
     openTry();
@@ -394,9 +417,10 @@ async function boot() {
   $("allTitle").textContent = T.app_all_styles; $("tarTitle").textContent = T.app_tariffs;
   $("balText").textContent = D.balance + " " + T.app_videos;
   $("tfxLbl").textContent = T.app_text_fx; $("tfxTitle").textContent = T.app_text_fx; $("tfxHint").textContent = T.app_text_fx_hint;
-  $("tfxPick").onclick = () => { haptic(); openLooks(); };
+  $("tfxLine").onclick = () => { haptic(); openLooks(); };
+  $("colorLine").onclick = () => { haptic(); open("colorSheet"); };
   D.creatives = D.styles.filter(s => s.creative); D.styles = D.styles.filter(s => !s.creative);
-  renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives();
+  renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives(); setupNav();
   pick(D.styles[0]);
   setupGuide();
 }
@@ -426,26 +450,42 @@ function seenGuide() {
   try { if (typeof tg !== "undefined" && tg && tg.CloudStorage && tg.CloudStorage.setItem) tg.CloudStorage.setItem(GUIDE_KEY, "1"); } catch (e) {}
 }
 
+// Nov 22 (owner, variant 5): the dots on the left edge, one per style; the full grid opens from «Стильдер»
 function renderRail() {
-  const rail = $("rail"); rail.innerHTML = "";
-  D.styles.slice(0, 4).forEach(s => {
-    const d = document.createElement("div"); d.className = "dotst"; d.dataset.id = s.id; d.textContent = icon(s);
-    // Nov 12 (user): while the video is stopped every style's name stands beside its button (slides in from the right)
-    const nm = document.createElement("span"); nm.className = "dname"; nm.textContent = label(s); d.append(nm);
-    d.onclick = () => { haptic(); pick(s); }; rail.append(d);
+  const dv = $("dotsv"); dv.innerHTML = "";
+  D.styles.forEach(s => {
+    const i = document.createElement("i"); i.dataset.id = s.id;
+    i.onclick = e => { e.stopPropagation(); haptic(); pick(s); }; dv.append(i);
   });
-  if (D.styles.length > 4) { const m = document.createElement("div"); m.className = "more"; m.textContent = "⌄"; m.onclick = () => open("allStyles"); rail.append(m); }
+  dv.style.display = D.styles.length > 1 ? "" : "none";
   const grid = $("grid"); grid.innerHTML = "";
   D.styles.forEach(s => {
     const c = document.createElement("div"); c.innerHTML = `<div class="dotst" data-id="${s.id}">${icon(s)}</div>`;
     c.append(document.createTextNode(label(s))); c.onclick = () => { pick(s); close(); }; grid.append(c);
   });
 }
-// Nov 16 (owner): ad creatives live behind the lamp, not in the style rail; the admin only for now
+// Nov 22 (owner): the bottom nav - Стильдер, Подкаст (who has it), the centre «＋» (= send), Креатив (who has it), Профиль
+const SHOW_ACTS = false;  // Түс / Мәтін эффектісі / Демо: the owner took these rows off on Nov 14; true brings them back
+function setupNav() {
+  $("navStyles").textContent = T.nav_styles; $("navPod").textContent = T.nav_podcast; $("navCre").textContent = T.nav_creative;
+  $("tabStyles").onclick = () => { haptic(); open("allStyles"); };
+  $("plus").onclick = () => $("send").click();
+  // the podcast -> Reels feature is the admin's chat command for now: the tab tells how to use it
+  $("tabPod").style.display = D.admin ? "" : "none";
+  $("podTitle").textContent = "🎙 " + T.nav_podcast + " → Reels"; $("podText").textContent = T.pod_text; $("podChat").textContent = T.pod_chat;
+  $("tabPod").onclick = () => { haptic(); open("podSheet"); };
+  $("podChat").onclick = () => { if (tg) tg.close(); };
+  $("swipeText").textContent = T.app_swipe_hint;
+  let seen = false; try { seen = localStorage.getItem(SWIPE_KEY) === "1"; } catch (e) {}
+  $("swipe").style.display = seen || D.styles.length < 2 ? "none" : "";
+}
+const SWIPE_KEY = "swiped_v1";
+function swiped() { $("swipe").style.display = "none"; try { localStorage.setItem(SWIPE_KEY, "1"); } catch (e) {} }
+// Nov 16 (owner): ad creatives are not in the style feed; Nov 22: they open from the «Креатив» tab (the admin only for now)
 function renderCreatives() {
   const list = D.creatives || [];
-  $("lamp").style.display = list.length ? "flex" : "none";
-  $("lamp").onclick = () => { haptic("medium"); open("creSheet"); };
+  $("tabCre").style.display = list.length ? "" : "none";
+  $("tabCre").onclick = () => { haptic("medium"); open("creSheet"); };
   const g = $("cgrid"); g.innerHTML = "";
   list.forEach((s, i) => {
     const t = document.createElement("div"); t.className = "ctile" + (style && style.id === s.id ? " on" : "");
@@ -462,8 +502,9 @@ function renderColors() {
   const dots = $("dots"); dots.innerHTML = "";
   D.colors.forEach(c => {
     const d = document.createElement("span"); d.className = "dot" + (c.id === color ? " on" : ""); d.style.background = c.swatch;
-    d.onclick = () => { haptic(); color = c.id; if (tfx !== "auto") { tfx = "auto"; renderPick(); } renderColors(); showColour(); }; dots.append(d);
+    d.onclick = () => { haptic(); color = c.id; if (tfx !== "auto") { tfx = "auto"; renderPick(); } renderColors(); close(); showColour(); }; dots.append(d);
   });
+  const on = D.colors.find(c => c.id === color); $("actSwatch").style.background = on ? on.swatch : "";
 }
 // ---------- "Мәтін эффектісі": the title look (Nov 12); previews load only when the sheet opens
 function lookName(id) { return T["tfx_" + id] || id; }
@@ -481,7 +522,7 @@ function renderLooks() {
   renderPick();
 }
 function renderPick() {
-  $("tfxPick").textContent = (tfx === "auto" ? "✨ " : "") + lookName(tfx) + " ›";
+  $("tfxLbl").textContent = tfx === "auto" ? T.app_text_fx : lookName(tfx);
   document.querySelectorAll("#tfxGrid .tile").forEach(t => t.classList.toggle("on", t.dataset.id === tfx));
 }
 function openLooks() {
@@ -514,10 +555,8 @@ function renderTariffs() {
 
 function pick(s) {
   style = s; stop(); cur = null;  // a new style always starts from its first second
-  document.querySelectorAll(".dotst").forEach(d => d.classList.toggle("on", d.dataset.id === s.id));
-  $("sname").textContent = icon(s) + " " + label(s);
-  const nm = document.createElement("b"); nm.textContent = label(s);  // Nov 14: "<style> стилінде видео жасау"
-  const [a, b] = (T.app_make || "%s").split("%s"); $("ptitle").replaceChildren(a || "", nm, b || "");
+  document.querySelectorAll(".dotst, #dotsv i").forEach(d => d.classList.toggle("on", d.dataset.id === s.id));
+  $("sName").textContent = icon(s) + " " + label(s); $("sWho").textContent = s.who || "";
   const vA = $("vAfter"), vB = $("vBefore");
   vA.poster = s.after ? afterSrc(s, ".jpg") : ""; vB.poster = s.before ? demoUrl(s.id, "before.jpg") : "";
   vA.src = s.after ? afterSrc(s, ".mp4") : ""; vB.src = s.before ? demoUrl(s.id, "before.mp4") : "";
@@ -530,13 +569,16 @@ function pick(s) {
   $("tryDemo").style.display = s.plan && s.before ? "" : "none";
   $("tfxLine").style.display = s.tfx ? "" : "none";
   $("colorLine").style.display = s.colorPick ? "" : "none";
+  const acts = SHOW_ACTS && ((s.plan && s.before) || s.tfx || s.colorPick);
+  $("acts").style.display = acts ? "" : "none"; $("app").classList.toggle("acts-on", !!acts);
   setKind(s.after ? "after" : "before");
+  preloadNext();
 
 }
 $("vAfter").addEventListener("error", () => { const v = $("vAfter");
   if (style && style.after && !/\/after\.mp4$/.test(v.src)) { v.poster = demoUrl(style.id, "after.jpg"); v.src = demoUrl(style.id, "after.mp4"); } });
 function setKind(kind) {
-  document.querySelectorAll(".segc button").forEach(b => b.classList.toggle("on", b.dataset.k === kind));
+  document.querySelectorAll("#seg button").forEach(b => b.classList.toggle("on", b.dataset.k === kind));
   const next = kind === "after" ? $("vAfter") : $("vBefore");
   if (cur && next !== cur) {
     const t = cur.currentTime, playing = !cur.paused; cur.pause();
@@ -545,9 +587,10 @@ function setKind(kind) {
   }
   $("vBefore").style.opacity = kind === "before" ? 1 : 0; cur = next;
 }
-document.querySelectorAll(".segc button").forEach(b => b.onclick = () => { haptic(); setKind(b.dataset.k); });
+document.querySelectorAll("#seg button").forEach(b => b.onclick = () => { haptic(); setKind(b.dataset.k); });
 function play() { if (!cur || !cur.src) return; $("app").classList.add("playing");
-  if (cur.readyState < 3) $("app").classList.add("buffering"); cur.play(); }
+  if (cur.readyState < 3) $("app").classList.add("buffering");
+  const p = cur.play(); if (p && p.catch) p.catch(() => stop()); }  // a phone that refuses to start shows the play button again
 // Nov 16: the turning ring shows while the playing demo waits for data, and goes when frames come
 ["vAfter", "vBefore"].forEach(id => { const v = $(id);
   v.addEventListener("waiting", () => { if (v === cur && !v.paused) $("app").classList.add("buffering"); });
@@ -557,7 +600,7 @@ function stop() { $("vAfter").pause(); $("vBefore").pause(); $("app").classList.
 $("play").onclick = play;
 ["vAfter", "vBefore"].forEach(id => {
   const v = $(id);
-  v.onclick = () => { if ($("app").classList.contains("playing")) stop(); };
+  v.onclick = () => { if (Date.now() - lastSwipe < 400) return; $("app").classList.contains("playing") ? stop() : play(); };
   v.ontimeupdate = () => { if (v !== cur || dragging) return; show(v.currentTime / (v.duration || 1)); $("sec").textContent = fmt(v.currentTime); };
   v.onended = () => { v.currentTime = 0; stop(); };
 });
@@ -568,8 +611,54 @@ function seek(e) { const r = bar.getBoundingClientRect(), f = Math.max(0, Math.m
 bar.onpointerdown = e => { dragging = true; bar.setPointerCapture(e.pointerId); seek(e); };
 bar.onpointermove = e => { if (dragging) seek(e); };
 bar.onpointerup = () => { dragging = false; };
-const fitTime = () => { $("time").style.right = (document.querySelector(".segc").offsetWidth + 24) + "px"; };
-window.addEventListener("resize", fitTime); setTimeout(fitTime, 300);
+
+// ---------- Nov 22 (owner, variant 5): swipe up = the next style, down = the previous one (round the list).
+// Only the current demo and the next one load; the others are just their first frame (a small picture).
+let lastSwipe = 0;
+function styleAt(step) {
+  const n = D.styles.length; if (!n) return null;
+  const i = D.styles.indexOf(style), base = i < 0 ? (step > 0 ? -1 : 0) : i;  // from a creative: the first / the last style
+  return D.styles[((base + step) % n + n) % n];
+}
+function still(s) { return !s ? "" : s.after ? afterSrc(s, ".jpg") : s.before ? demoUrl(s.id, "before.jpg") : ""; }
+function preloadNext() {
+  const nx = styleAt(1), v = $("vNext");
+  if (!nx || nx === style || !nx.after) { v.removeAttribute("src"); return; }
+  const src = afterSrc(nx, ".mp4"); if (!v.src.endsWith(src)) { v.src = src; v.load(); }
+}
+(function swipe() {
+  const feed = $("feed"), track = $("track"), peek = $("peek");
+  let y0 = null, dy = 0, t0 = 0, dir = 0, busy = false, wheelLock = false, id = null;
+  const skip = e => e.target.closest("#bar,.acts,.dotsv,.top,#send,.play");
+  function show(d) {
+    if (d === dir) return; dir = d; const img = still(styleAt(d));
+    peek.style.top = d > 0 ? "100%" : "-100%"; peek.style.backgroundImage = img ? `url("${img}")` : "none"; peek.classList.add("show");
+  }
+  function reset() { track.classList.remove("anim"); track.style.transform = ""; peek.classList.remove("show"); dir = 0; }
+  function back() { track.classList.add("anim"); track.style.transform = ""; setTimeout(reset, 330); }
+  function go(d) {
+    if (busy || !D || !D.styles || D.styles.length < 2 || $("app").classList.contains("order-mode")) return; busy = true; lastSwipe = Date.now();
+    show(d); haptic(); swiped(); track.classList.add("anim"); track.style.transform = `translateY(${d > 0 ? -100 : 100}%)`;
+    setTimeout(() => { pick(styleAt(d)); reset(); busy = false; play(); }, 330);  // the new style starts by itself
+  }
+  feed.addEventListener("pointerdown", e => {
+    if (busy || y0 !== null || !D || !D.styles || D.styles.length < 2 || skip(e) || document.querySelector("#app.open")) return;
+    y0 = e.clientY; dy = 0; t0 = Date.now(); id = e.pointerId;
+  });
+  feed.addEventListener("pointermove", e => {
+    if (y0 === null || e.pointerId !== id) return; dy = e.clientY - y0;
+    if (Math.abs(dy) < 8) return; lastSwipe = Date.now(); show(dy < 0 ? 1 : -1); track.style.transform = `translateY(${dy}px)`;
+  });
+  const end = e => {
+    if (y0 === null || e.pointerId !== id) return; y0 = null;
+    const fast = Math.abs(dy) > 30 && Date.now() - t0 < 280;
+    if (Math.abs(dy) > feed.clientHeight * 0.18 || fast) go(dy < 0 ? 1 : -1); else if (dy) back();
+  };
+  feed.addEventListener("pointerup", end); feed.addEventListener("pointercancel", end);
+  feed.addEventListener("wheel", e => { if (Math.abs(e.deltaY) < 25 || wheelLock) return; wheelLock = true; setTimeout(() => { wheelLock = false; }, 700); go(e.deltaY > 0 ? 1 : -1); }, {passive: true});
+  document.addEventListener("keydown", e => { if (document.querySelector("#app.open, .pg.show, #edit.show, .screen.show, .guide.show")) return;
+    if (e.key === "ArrowDown") go(1); else if (e.key === "ArrowUp") go(-1); });
+})();
 
 function open(id) { $("app").classList.add("open"); $(id).classList.add("show"); }
 function close() { stopLooks(); $("app").classList.remove("open"); document.querySelectorAll(".sheet").forEach(s => s.classList.remove("show")); }
@@ -747,7 +836,7 @@ function pgClose(id) { $(id).classList.remove("show"); }
 document.querySelectorAll("[data-pg-close]").forEach(x => x.onclick = () => { haptic(); pgClose(x.closest(".pg").id); });
 function setupMe() {
   $("me").style.display = "flex";
-  $("meText").textContent = D.admin ? T.app_admin : T.app_profile;
+  $("meText").textContent = T.nav_profile;  // the admin's tab opens the admin panel, as the old button did
   $("prTitle").textContent = T.app_profile; $("adTitle").textContent = "🛠 " + T.app_admin;
   $("me").onclick = () => { haptic("medium"); D.admin ? openAdmin() : openProfile(); };
   // Nov 16: every style's first frame is fetched at once, so switching styles never shows a black screen
