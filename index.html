@@ -979,7 +979,7 @@ function preloadNext() {
 function open(id) { $("app").classList.add("open"); $(id).classList.add("show"); }
 function close() { stopLooks(); $("app").classList.remove("open"); document.querySelectorAll(".sheet").forEach(s => s.classList.remove("show")); }
 $("veil").onclick = close; document.querySelectorAll("[data-close]").forEach(x => x.onclick = close);
-$("bal").onclick = () => { $("tarNote").style.display = "none"; open("tariffs"); };
+$("bal").onclick = () => { const n = $("tarNote"); if (D.freeDay) { n.textContent = D.freeDay; n.style.display = "block"; } else n.style.display = "none"; open("tariffs"); };  // Nov 22 free day
 
 // ---------- send a video
 let started = null;
@@ -1180,6 +1180,7 @@ function profileHtml(me, self) {
   h += `<div class="glass card2"><h4>${esc(T.pr_made)} · ${me.madeTotal}</h4>`
     + (me.made.length ? `<div class="mchips">${me.made.map(m => `<span>${esc(m.style)} <b>${m.n}</b></span>`).join("")}</div>` : `<div class="sm">${esc(T.pr_none_made)}</div>`)
     + `<div class="sm">${esc(T.pr_in_chat)}</div></div>`;
+  if (D.freeDay) h += `<div class="glass card2"><b>${esc(D.freeDay)}</b></div>`;  // Nov 22 free day
   h += `<div class="glass card2"><h4>${esc(me.left > 0 ? T.pr_buy_title : T.pr_choose)}</h4>${tariffRows(me)}<div class="hint2">♾️ ${T.pr_hint}</div></div>`;
   return h;
 }
