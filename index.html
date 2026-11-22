@@ -709,7 +709,7 @@ function marked() { return podTimes.slice(0, podN).filter(r => rowOk(r) === true
 function renderPod() {
   $("pAutoSw").checked = podAuto; $("pAutoCard").classList.toggle("lit", podAuto);
   $("pAutoSub").textContent = podAuto ? T.pod_auto_on : T.pod_auto_off;
-  $("pCountRow").style.display = podAuto ? "" : "none"; $("pOffHint").style.display = podAuto ? "" : "none"; $("pTimesBtn").style.display = podAuto ? "none" : "";
+  $("pCountRow").style.display = podAuto ? "" : "none"; $("pOffHint").style.display = podAuto ? "" : "none"; $("pOffText").textContent = (T.pod_hint_off || "").replace("%N%", podN); $("pTimesBtn").style.display = podAuto ? "none" : "";
   seg3($("pCount"), podN, n => { podN = n; renderPod(); });
   $("pTimesS").textContent = `${T.pod_times_sub} · ${marked()}/${podN} ${T.pod_marked}`;
   const chosen = podStyleList().filter(s => podStyles.includes(s.id));
