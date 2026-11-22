@@ -420,6 +420,9 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="gdst"><div class="gdstep"><i>1</i><div><b id="gdS1"></b><span id="gdS1s"></span></div></div>
       <div class="gdstep"><i>2</i><div><b id="gdS2"></b><span id="gdS2s"></span></div></div>
       <div class="gdstep"><i>3</i><div><b id="gdS3"></b><span id="gdS3s"></span></div></div></div>
+    <div class="gds" id="gdMore"></div>
+    <div class="gdst"><div class="gdstep"><i><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#1a1206" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></i><div><b id="gdP"></b><span id="gdPs"></span></div></div>
+      <div class="gdstep"><i><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#1a1206" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.5h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2V17h5v-1c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg></i><div><b id="gdC"></b><span id="gdCs"></span></div></div></div>
     <div class="gds" id="gdFilm"></div>
     <div class="gdtips"><div class="gdtip"><em>📱</em><b id="gdT1"></b><span id="gdT1s"></span></div>
       <div class="gdtip"><em>⏱</em><b id="gdT2"></b><span id="gdT2s"></span></div>
@@ -553,29 +556,19 @@ async function boot() {
   startWarm();
 }
 
-// ---------- Nov 22 (owner): the one-page guide - on the first opening, again from «?»; X or the button closes it
-const GUIDE_KEY = "guide_seen_v1";
+// ---------- Nov 22 (owner): the one-page guide. A client sees it at every opening (the demos load behind it);
+// the admin never gets it by itself. «?» opens it again for anyone; X, the button or a tap outside closes it.
 function setupGuide() {
   [["gdTitle", "gd_title"], ["gdLead", "gd_lead"], ["gdHow", "gd_how"], ["gdFilm", "gd_film"], ["gdOk", "gd_ok"], ["gdFoot", "gd_foot"],
    ["gdS1", "gd_s1"], ["gdS1s", "gd_s1_sub"], ["gdS2", "gd_s2"], ["gdS2s", "gd_s2_sub"], ["gdS3", "gd_s3"], ["gdS3s", "gd_s3_sub"],
+   ["gdMore", "gd_more"], ["gdP", "gd_pod"], ["gdPs", "gd_pod_sub"], ["gdC", "gd_cre"], ["gdCs", "gd_cre_sub"],
    ["gdT1", "gd_t1"], ["gdT1s", "gd_t1_sub"], ["gdT2", "gd_t2"], ["gdT2s", "gd_t2_sub"], ["gdT3", "gd_t3"], ["gdT3s", "gd_t3_sub"],
    ["gdT4", "gd_t4"], ["gdT4s", "gd_t4_sub"]].forEach(([id, key]) => { $(id).textContent = T[key] || ""; });
-  const hide = () => { haptic(); $("guide").classList.remove("show"); seenGuide(); };
+  const hide = () => { haptic(); $("guide").classList.remove("show"); };
   $("gdX").onclick = hide; $("gdOk").onclick = hide;
   $("guide").onclick = e => { if (e.target === $("guide")) hide(); };
-  $("help").onclick = () => { haptic(); $("guide").classList.add("show"); };
-  let seen = false;
-  try { seen = localStorage.getItem(GUIDE_KEY) === "1"; } catch (e) {}
-  if (seen) return;
-  const cloud = typeof tg !== "undefined" && tg && tg.CloudStorage;  // kept by Telegram for the client, on every phone
-  if (cloud && cloud.getItem) {
-    try { cloud.getItem(GUIDE_KEY, (err, value) => { if (value === "1") seenGuide(); else $("guide").classList.add("show"); }); return; } catch (e) {}
-  }
-  $("guide").classList.add("show");
-}
-function seenGuide() {
-  try { localStorage.setItem(GUIDE_KEY, "1"); } catch (e) {}
-  try { if (typeof tg !== "undefined" && tg && tg.CloudStorage && tg.CloudStorage.setItem) tg.CloudStorage.setItem(GUIDE_KEY, "1"); } catch (e) {}
+  $("help").onclick = () => { haptic(); $("guide").querySelector(".gdbox").scrollTop = 0; $("guide").classList.add("show"); };
+  if (!D.admin) $("guide").classList.add("show");
 }
 
 // Nov 22 (owner, variant 5): the dots on the left edge, one per style; the full grid opens from «Стильдер»
