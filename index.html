@@ -269,6 +269,72 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 .gdf{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-top:10px;line-height:1.4}
 .pill.help{width:36px;height:36px;padding:0;justify-content:center;font-size:16px;font-weight:800;color:var(--gold)}
 </style>
+<style id="podCss">
+/* Nov 22 (owner, docs/mockups/podcast-page-v3-maket.html): the «Подкаст» page over the feed; the white bar stays */
+.pod{position:absolute;inset:0;z-index:6;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;
+  background:radial-gradient(120% 50% at 50% 0%,#2e2410 0%,#0b0b0d 60%) #0b0b0d;padding:calc(var(--top) + 10px) 14px calc(var(--navb) + 100px)}
+.pod.show{display:block}
+.pstep{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;margin:20px 2px 9px}.pstep:first-child{margin-top:4px}
+.pstep small{font-size:11.5px;color:rgba(255,255,255,.5);font-weight:600}
+.pnum{width:23px;height:23px;flex:none;border-radius:50%;background:var(--gold);color:#1a1206;font-size:12.5px;display:flex;align-items:center;justify-content:center}
+.pcover{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:1206/665;background:#141416 center/cover no-repeat;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.pcover .dur{position:absolute;right:6px;bottom:6px;background:#0b0b0d;border-radius:8px;padding:5px 10px;font-size:13px;font-weight:800}
+.pcover .tag{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,209,92,.6);border-radius:7px;padding:3px 8px;font-size:11px;font-weight:800;color:var(--gold)}
+.ptitle2{font-size:15px;font-weight:800;line-height:1.32;margin:11px 2px 3px;text-wrap:balance}
+.pby{font-size:12px;color:rgba(255,255,255,.55);margin:0 2px}
+.prow{display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -14px;padding:0 14px 4px;scrollbar-width:none;touch-action:pan-x pan-y}
+.prow::-webkit-scrollbar{display:none}
+.pclip{position:relative;flex:none;width:124px;height:220px;border-radius:14px;overflow:hidden;background:#141416 center/cover no-repeat;scroll-snap-align:start;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);cursor:pointer}
+.pclip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pl{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;border:1.5px solid rgba(255,255,255,.8);background:rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;transition:opacity .2s;pointer-events:none}
+.pl svg{margin-left:3px}
+.pclip.on{box-shadow:0 0 0 2.5px var(--gold),0 0 16px rgba(255,209,92,.45)}.pclip.on .pl{opacity:0}
+.pclip .snd{position:absolute;right:7px;top:7px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.55);font-size:12px;display:none;align-items:center;justify-content:center}
+.pclip.on .snd{display:flex}
+.pclip .prog{position:absolute;left:8px;right:8px;bottom:8px;height:3px;border-radius:2px;background:rgba(255,255,255,.3);display:none}
+.pclip .prog i{display:block;height:100%;width:0;border-radius:2px;background:#fff}.pclip.on .prog{display:block}
+.pcard{border-radius:20px;padding:13px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.2)}
+.pcard.lit{border-color:rgba(255,209,92,.7);background:linear-gradient(135deg,rgba(255,209,92,.16),rgba(255,209,92,.04))}
+.arow{display:flex;gap:12px;align-items:center;cursor:pointer}.arow b{display:block;font-size:13.5px;line-height:1.3}
+.arow span{display:block;font-size:11.5px;color:rgba(255,255,255,.62);margin-top:3px;line-height:1.35}
+.sw{flex:none;-webkit-appearance:none;appearance:none;width:52px;height:31px;border-radius:999px;background:rgba(255,255,255,.22);position:relative;transition:background .2s;cursor:pointer;margin:0}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:left .2s}
+.sw:checked{background:#34C759}.sw:checked::after{left:24px}
+.rc{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);font-size:13px;font-weight:700}
+.rc.first{margin:0 0 10px;padding:0;border:0}
+.seg3{flex:1;max-width:200px;display:flex;border-radius:14px;padding:3px;background:rgba(0,0,0,.35);gap:3px}
+.seg3 button{flex:1;border:0;background:transparent;color:rgba(255,255,255,.7);padding:8px 0;border-radius:11px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
+.seg3 button.on{background:#fff;color:#111}
+.tbtn{display:flex;align-items:center;gap:10px;margin-top:11px;padding:11px 12px;border-radius:14px;background:rgba(255,209,92,.12);border:1px solid rgba(255,209,92,.65);cursor:pointer}
+.tbtn div{flex:1}.tbtn b{display:block;font-size:13.5px;color:var(--gold)}.tbtn span{display:block;font-size:11.5px;color:rgba(255,255,255,.65);margin-top:3px;line-height:1.35}
+.tbtn em{font-style:normal;font-size:22px;color:var(--gold)}
+.stylerow{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
+.chosen{flex:1;display:flex;align-items:center;gap:6px;min-width:0}.chosen>div{min-width:0;margin-left:4px}
+.chosen b{display:block;font-size:13px;line-height:1.3}.chosen>div span{display:block;font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.mini{flex:none;width:30px;height:52px;border-radius:7px;background:#222 center/cover;box-shadow:0 0 0 1.5px var(--gold)}
+.pick{flex:none;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;color:#2a1d00;background:linear-gradient(180deg,#FFE08A,#F5B52B)}
+.psend{display:flex;gap:8px}
+.plink{flex:1;min-width:0;border-radius:14px;padding:13px 12px;font-size:15px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.22);outline:0;font-family:inherit}
+.plink:focus{border-color:var(--gold)}.plink::placeholder{color:rgba(255,255,255,.45)}
+.psend .cta{margin:0;width:auto;flex:none;padding:13px 18px;font-size:15px;border-radius:14px}
+.perr{color:#ff9f0a;font-size:12.5px;margin-top:8px;min-height:16px;text-align:center;line-height:1.35}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.ps{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#222 center/cover;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);cursor:pointer}
+.ps video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ps b{position:absolute;left:0;right:0;bottom:0;padding:16px 4px 6px;font-size:11px;font-weight:800;text-align:center;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85))}
+.ps.on{box-shadow:0 0 0 2.5px var(--gold),0 0 14px rgba(255,209,92,.45)}
+.ps .ck{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#1a1206;font-weight:900;font-size:13px;display:none;align-items:center;justify-content:center}
+.ps.on .ck{display:flex}
+.ps .pp{position:absolute;left:50%;top:42%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid rgba(255,255,255,.8);background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:12px;padding-left:2px}
+.ps.play .pp{opacity:0}
+.thead,.trw{display:grid;grid-template-columns:66px 1fr 16px 1fr;gap:6px;align-items:center}
+.thead{font-size:11px;color:rgba(255,255,255,.55);font-weight:700;text-align:center;margin-bottom:6px}
+.tlist{display:flex;flex-direction:column;gap:7px;margin-bottom:6px}
+.trw .tn{font-size:13px;font-weight:800}.trw .td{text-align:center;color:rgba(255,255,255,.45)}
+.tin{width:100%;text-align:center;font-variant-numeric:tabular-nums;font-size:17px;font-weight:800;color:var(--gold);border-radius:11px;padding:8px 0;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);outline:0;font-family:inherit}
+.tin::placeholder{color:rgba(255,255,255,.28)}.tin:focus{border:1.5px solid var(--gold);box-shadow:0 0 10px rgba(255,209,92,.4)}
+.tin.bad{border-color:#ff9f0a}
+</style>
 </head>
 <body>
 <div id="app">
@@ -304,6 +370,24 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <button class="cta" id="send"></button>
     </div>
   </div>
+  <div class="pod" id="pod">
+    <div class="pstep"><span class="pnum">1</span><span id="pS1"></span></div>
+    <div class="pcover" id="pCover"><span class="tag" id="pTag"></span><span class="dur" id="pDur"></span></div>
+    <div class="ptitle2" id="pTitle"></div><div class="pby" id="pBy"></div>
+    <div class="pstep"><span class="pnum">2</span><span id="pS2"></span><small id="pS2h"></small></div>
+    <div class="prow" id="pClips"></div>
+    <div class="pstep"><span class="pnum">3</span><span id="pS3"></span></div>
+    <div class="pcard lit" id="pAutoCard">
+      <label class="arow"><div><b id="pAuto"></b><span id="pAutoSub"></span></div><input type="checkbox" class="sw" id="pAutoSw" checked></label>
+      <div class="rc" id="pCountRow"><span id="pCountLbl"></span><div class="seg3" id="pCount"></div></div>
+      <div class="tbtn" id="pTimesBtn" style="display:none"><div><b id="pTimesB"></b><span id="pTimesS"></span></div><em>›</em></div>
+    </div>
+    <div class="pstep"><span class="pnum">4</span><span id="pS4"></span></div>
+    <div class="pcard stylerow" id="pStyleRow"><div class="chosen"><span id="pMinis" style="display:flex;gap:5px"></span><div><b id="pStyleNames"></b><span id="pStyleSub"></span></div></div><span class="pick" id="pPick"></span></div>
+    <div class="pstep"><span class="pnum">5</span><span id="pS5"></span></div>
+    <div class="psend"><input class="plink" id="pLink" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="cta" id="pSend"></button></div>
+    <div class="perr" id="pErr"></div>
+  </div>
   <nav class="nav" id="nav">
     <button class="tab on" id="tabStyles"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span id="navStyles"></span></button>
     <button class="tab" id="tabPod"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><span id="navPod"></span></button>
@@ -328,7 +412,11 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   <input type="file" id="file" style="display:none">
   <div class="veil" id="veil"></div>
   <div class="sheet glass" id="colorSheet"><h3><span id="colorTitle"></span><span class="x" data-close>✕</span></h3><div class="dots" id="dots"></div></div>
-  <div class="sheet glass" id="podSheet"><h3><span id="podTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="podText"></div><button class="cta" id="podChat" style="width:100%"></button></div>
+  <div class="sheet glass" id="podStyles"><h3><span id="psTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="psHint"></div><div class="pgrid" id="psGrid"></div><button class="cta" id="psDone" style="width:100%"></button></div>
+  <div class="sheet glass" id="podTimes"><h3><span id="ptTitle"></span><span class="x" data-close>✕</span></h3>
+    <div class="rc first"><span id="ptCountLbl"></span><div class="seg3" id="ptCount"></div></div>
+    <div class="note" id="ptHint"></div><div class="thead"><span></span><span id="ptStart"></span><span></span><span id="ptEnd"></span></div>
+    <div class="tlist" id="ptList"></div><div class="perr" id="ptErr"></div><button class="cta" id="ptSave" style="width:100%"></button></div>
   <div class="sheet glass" id="tfxSheet"><h3><span id="tfxTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="tfxHint"></div><div class="tgrid" id="tfxGrid"></div></div>
   <div class="sheet glass" id="creSheet"><h3><span>💡 Креативтер</span><span class="x" data-close>✕</span></h3><div class="cgrid" id="cgrid"></div></div>
   <div class="sheet glass" id="allStyles"><h3><span id="allTitle"></span><span class="x" data-close>✕</span></h3><div class="grid" id="grid"></div></div>
@@ -444,6 +532,7 @@ async function boot() {
   renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives(); setupNav();
   pick(D.styles[0]);
   setupGuide();
+  startWarm();
 }
 
 // ---------- Nov 22 (owner): the one-page guide - on the first opening, again from «?»; X or the button closes it
@@ -489,17 +578,197 @@ function renderRail() {
 const SHOW_ACTS = false;  // Түс / Мәтін эффектісі / Демо: the owner took these rows off on Nov 14; true brings them back
 function setupNav() {
   $("navStyles").textContent = T.nav_styles; $("navPod").textContent = T.nav_podcast; $("navCre").textContent = T.nav_creative;
-  $("tabStyles").onclick = () => { haptic(); open("allStyles"); };
-  $("plus").onclick = () => $("send").click();
-  // Nov 22 (owner): every client sees all five tabs; what Подкаст opens for clients the owner says later ("soon" till then).
-  // For the admin it tells how to use the /podcast chat command.
-  $("podTitle").textContent = "🎙 " + T.nav_podcast + (D.admin ? " → Reels" : "");
-  $("podText").textContent = D.admin ? T.pod_text : T.pod_soon; $("podChat").textContent = D.admin ? T.pod_chat : T.pod_ok;
-  $("tabPod").onclick = () => { haptic(); open("podSheet"); };
-  $("podChat").onclick = () => { if (D.admin && tg) tg.close(); else close(); };
+  // Nov 22 (owner): «Стильдер» on the podcast page goes back to the styles; on the styles it opens the full grid
+  $("tabStyles").onclick = () => { haptic(); if (podOpen()) showPod(false); else open("allStyles"); };
+  $("plus").onclick = () => { showPod(false); $("send").click(); };
+  $("tabPod").onclick = () => { haptic(); showPod(true); };
+  setupPod();
   $("swipeText").textContent = T.app_swipe_hint;
   let seen = false; try { seen = localStorage.getItem(SWIPE_KEY) === "1"; } catch (e) {}
   $("swipe").style.display = seen || D.styles.length < 2 ? "none" : "";
+}
+
+// ---------- Nov 22 (owner): everything is ready before the client looks. While the guide and the first demo are on
+// screen, the other demos and the podcast sample load quietly, one after another, into memory (blob), so a swipe
+// or a tap plays at once. Order: the next style, the podcast pictures and first clips, the other styles, the rest.
+const BLOBS = {};
+let warmQ = [], warming = false;
+function fast(url) { return (url && BLOBS[url]) || url; }
+function warm(url) { if (!url || BLOBS[url] || warmQ.includes(url)) return; warmQ.push(url); pump(); }
+async function pump() {
+  if (warming) return; warming = true;
+  while (warmQ.length) {
+    const u = warmQ.shift();
+    try { const r = await fetch(u); if (r.ok) BLOBS[u] = URL.createObjectURL(await r.blob()); } catch (e) {}
+  }
+  warming = false;
+}
+function startWarm() {
+  const save = navigator.connection && navigator.connection.saveData;
+  if (save || !D || !D.styles) return;
+  const go = () => {
+    const order = [];
+    for (let k = 1; k < D.styles.length; k++) order.push(styleAt(k));
+    const demo = s => s && s.after ? demoUrl(s.id, "after.mp4") : "";
+    if (order[0]) warm(demo(order[0]));
+    new Image().src = podUrl("cover.jpg");
+    for (let n = 1; n <= POD.clips; n++) new Image().src = podUrl(`clip_${pad(n)}.jpg`);
+    for (let n = 1; n <= 3; n++) warm(podUrl(`clip_${pad(n)}.mp4`));
+    order.slice(1).forEach(s => warm(demo(s)));
+    for (let n = 4; n <= POD.clips; n++) warm(podUrl(`clip_${pad(n)}.mp4`));
+  };
+  const v = $("vAfter"); let done = false;
+  const once = () => { if (done) return; done = true; go(); };
+  v.addEventListener("canplaythrough", once, {once: true}); setTimeout(once, 2500);
+}
+
+// ---------- Nov 22 (owner, docs/mockups/podcast-page-v3-maket.html): the «Подкаст» page
+const POD = {clips: 12, dur: "1:08:54", title: "Кез келген тілді үйрену үшін миды қалай дұрыс пайдалану керек?",
+  by: "Abdrashit Talks · Абдрашит Тулкибай"};  // the owner's sample podcast and its 12 Reels
+const POD_STYLES = ["motion_pro", "inform"];  // what a podcast clip can be made in today (bot/podcast.py)
+const pad = n => String(n).padStart(2, "0");
+function podUrl(name) { return HOSTED ? `podcast/${name}` : `/app/podcast/${name}`; }
+let podAuto = true, podN = 10, podStyles = ["motion_pro"], podTimes = Array.from({length: 20}, () => ({a: "", b: ""}));
+function podOpen() { return $("pod").classList.contains("show"); }
+function showPod(on) {
+  if (on === podOpen()) return;
+  if (on) { stop(); $("pod").classList.add("show"); $("pod").scrollTop = 0; } else { podStop(); $("pod").classList.remove("show"); }
+  $("tabPod").classList.toggle("on", on); $("tabStyles").classList.toggle("on", !on);
+}
+function seg3(box, value, pick) {
+  box.innerHTML = [10, 15, 20].map(n => `<button data-n="${n}" class="${n === value ? "on" : ""}">${n}</button>`).join("");
+  box.querySelectorAll("button").forEach(b => b.onclick = () => { haptic(); pick(+b.dataset.n); });
+}
+function setupPod() {
+  [["pS1", "pod_s1"], ["pTag", "pod_example"], ["pS2", "pod_s2"], ["pS2h", "pod_s2_hint"], ["pS3", "pod_s3"], ["pAuto", "pod_auto"],
+   ["pCountLbl", "pod_count"], ["pTimesB", "pod_times_btn"], ["pS4", "pod_s4"], ["pPick", "pod_pick"], ["pS5", "pod_s5"],
+   ["pSend", "pod_send"], ["psTitle", "pod_s4"], ["psHint", "pod_styles_hint"], ["ptTitle", "pod_times_title"],
+   ["ptCountLbl", "pod_count"], ["ptHint", "pod_times_hint"], ["ptStart", "pod_start"], ["ptEnd", "pod_end"], ["ptSave", "pod_save"]]
+    .forEach(([id, key]) => { $(id).textContent = T[key] || ""; });
+  $("pLink").placeholder = "🔗 " + (T.pod_link_ph || "");
+  $("pCover").style.backgroundImage = `url("${podUrl("cover.jpg")}")`;
+  $("pDur").textContent = POD.dur; $("pTitle").textContent = POD.title; $("pBy").textContent = POD.by + " · " + POD.dur;
+  // the sample Reels: a tap plays it right in its frame with sound; a swipe of the row stops it
+  const row = $("pClips"); row.innerHTML = "";
+  for (let n = 1; n <= POD.clips; n++) {
+    const c = document.createElement("div"); c.className = "pclip"; c.dataset.n = n;
+    c.style.backgroundImage = `url("${podUrl(`clip_${pad(n)}.jpg`)}")`;
+    c.innerHTML = `<i class="pl"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></i><span class="snd">🔊</span><span class="prog"><i></i></span>`;
+    c.onclick = () => podPlay(c); row.append(c);
+  }
+  let x0 = 0;
+  row.addEventListener("scroll", () => { if (podCur && Math.abs(row.scrollLeft - x0) > 14) podStop(); }, {passive: true});
+  row.addEventListener("pointerdown", () => { x0 = row.scrollLeft; });
+  $("pAutoSw").onchange = () => { haptic(); podAuto = $("pAutoSw").checked; renderPod(); };
+  $("pTimesBtn").onclick = () => { haptic(); openTimes(); };
+  $("pStyleRow").onclick = () => { haptic(); openPodStyles(); };
+  $("pSend").onclick = podSend;
+  $("psDone").onclick = () => { podStylesStop(); close(); renderPod(); };
+  $("ptSave").onclick = saveTimes;
+  renderPod();
+}
+let podCur = null;
+function podPlay(card) {
+  if (podCur === card) { podStop(); return; }
+  podStop();
+  let v = card.querySelector("video");
+  if (!v) { v = document.createElement("video"); v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
+    v.poster = podUrl(`clip_${pad(card.dataset.n)}.jpg`); card.prepend(v);
+    v.ontimeupdate = () => { card.querySelector(".prog i").style.width = (100 * v.currentTime / (v.duration || 1)) + "%"; };
+    v.onended = () => podStop(); }
+  if (!v.src) v.src = fast(podUrl(`clip_${pad(card.dataset.n)}.mp4`));
+  podCur = card; card.classList.add("on"); haptic();
+  const p = v.play(); if (p && p.catch) p.catch(() => podStop());
+}
+function podStop() {
+  document.querySelectorAll("#pClips video").forEach(v => v.pause());
+  document.querySelectorAll("#pClips .pclip.on").forEach(c => c.classList.remove("on"));
+  podCur = null;
+}
+function podStyleList() { return POD_STYLES.map(id => D.styles.find(s => s.id === id) || {id, name: id === "inform" ? "💡 Информ" : "⚡ Motion Pro", after: true}); }
+function marked() { return podTimes.slice(0, podN).filter(r => rowOk(r) === true).length; }
+function renderPod() {
+  $("pAutoSw").checked = podAuto; $("pAutoCard").classList.toggle("lit", podAuto);
+  $("pAutoSub").textContent = podAuto ? T.pod_auto_on : T.pod_auto_off;
+  $("pCountRow").style.display = podAuto ? "" : "none"; $("pTimesBtn").style.display = podAuto ? "none" : "";
+  seg3($("pCount"), podN, n => { podN = n; renderPod(); });
+  $("pTimesS").textContent = `${T.pod_times_sub} · ${marked()}/${podN} ${T.pod_marked}`;
+  const chosen = podStyleList().filter(s => podStyles.includes(s.id));
+  $("pMinis").innerHTML = chosen.map(s => `<span class="mini" style="background-image:url('${demoUrl(s.id, "after.jpg")}')"></span>`).join("");
+  $("pStyleNames").textContent = chosen.map(s => label(s)).join(", ") || "—";
+  $("pStyleSub").textContent = `${chosen.length} ${T.pod_chosen}`;
+}
+function openPodStyles() {
+  const g = $("psGrid"); g.innerHTML = "";
+  podStyleList().forEach(s => {
+    const c = document.createElement("div"); c.className = "ps" + (podStyles.includes(s.id) ? " on" : "");
+    c.style.backgroundImage = `url('${demoUrl(s.id, "after.jpg")}')`;
+    c.innerHTML = `<span class="pp">▶</span><span class="ck">✓</span><b></b>`; c.querySelector("b").textContent = icon(s) + " " + label(s);
+    c.querySelector(".pp").onclick = e => { e.stopPropagation(); podStylePlay(c, s); };
+    c.onclick = () => { haptic(); const i = podStyles.indexOf(s.id);
+      if (i >= 0) { if (podStyles.length > 1) podStyles.splice(i, 1); } else podStyles.push(s.id);
+      c.classList.toggle("on", podStyles.includes(s.id)); $("psDone").textContent = `${T.pod_done} · ${podStyles.length}`; };
+    g.append(c);
+  });
+  $("psDone").textContent = `${T.pod_done} · ${podStyles.length}`;
+  open("podStyles");
+}
+function podStylePlay(card, s) {
+  const was = card.classList.contains("play"); podStylesStop(); if (was) return;
+  let v = card.querySelector("video");
+  if (!v) { v = document.createElement("video"); v.playsInline = true; v.setAttribute("playsinline", ""); card.prepend(v); v.onended = podStylesStop;
+    v.onclick = e => { e.stopPropagation(); podStylesStop(); }; }
+  if (!v.src) v.src = fast(demoUrl(s.id, "after.mp4"));
+  card.classList.add("play"); const p = v.play(); if (p && p.catch) p.catch(podStylesStop);
+}
+function podStylesStop() { document.querySelectorAll("#psGrid video").forEach(v => v.pause()); document.querySelectorAll("#psGrid .ps.play").forEach(c => c.classList.remove("play")); }
+// the client's marks: "5:15", "05:15" or "1:05:15"; typed as digits, the colons come by themselves
+function typed(v) { const d = v.replace(/\D/g, "").slice(0, 6);
+  if (d.length <= 2) return d; if (d.length <= 4) return d.slice(0, -2) + ":" + d.slice(-2); return d.slice(0, -4) + ":" + d.slice(-4, -2) + ":" + d.slice(-2); }
+function secs(v) { if (!/^\d{1,2}(:\d{2}){1,2}$/.test(v || "")) return null; const p = v.split(":").map(Number);
+  if (p.slice(1).some(x => x > 59)) return null; return p.reduce((a, x) => a * 60 + x, 0); }
+function rowOk(r) { if (!r.a && !r.b) return null; const a = secs(r.a), b = secs(r.b);
+  return a !== null && b !== null && a < b && b - a >= 10 && b - a <= 180; }
+function openTimes() {
+  drawTimes(); $("ptErr").textContent = ""; open("podTimes");
+}
+function drawTimes() {
+  seg3($("ptCount"), podN, n => { podN = n; drawTimes(); });
+  const L = $("ptList"); L.innerHTML = "";
+  for (let i = 0; i < podN; i++) {
+    const r = podTimes[i], row = document.createElement("div"); row.className = "trw";
+    row.innerHTML = `<span class="tn">${i + 1}-${esc(T.pod_video)}</span><input class="tin" inputmode="numeric" placeholder="00:00" maxlength="8"><span class="td">—</span><input class="tin" inputmode="numeric" placeholder="00:00" maxlength="8">`;
+    const [ia, ib] = row.querySelectorAll("input"); ia.value = r.a; ib.value = r.b;
+    const mark = () => { const ok = rowOk(r); ia.classList.toggle("bad", ok === false); ib.classList.toggle("bad", ok === false); };
+    ia.oninput = () => { ia.value = typed(ia.value); r.a = ia.value; mark(); };
+    ib.oninput = () => { ib.value = typed(ib.value); r.b = ib.value; mark(); };
+    mark(); L.append(row);
+  }
+}
+function saveTimes() {
+  const rows = podTimes.slice(0, podN);
+  if (rows.some(r => rowOk(r) === false)) { $("ptErr").textContent = T.pod_err_range; return; }
+  $("ptErr").textContent = ""; close(); renderPod();
+}
+async function podSend() {
+  const err = t => { $("pErr").textContent = t || ""; if (t) haptic("medium"); };
+  const url = $("pLink").value.trim();
+  if (!/^https:\/\/((www\.|m\.)?youtube\.com\/|youtu\.be\/)/.test(url)) return err(T.pod_err_link);
+  if (!podStyles.length) return err(T.pod_err_style);
+  let times = null;
+  if (!podAuto) {
+    const rows = podTimes.slice(0, podN);
+    if (rows.some(r => rowOk(r) === false)) { err(T.pod_err_range); return openTimes(); }
+    if (marked() < podN) { err((T.pod_err_times || "").replace("%N%", `${marked()}/${podN}`)); return openTimes(); }
+    times = rows.map(r => [secs(r.a), secs(r.b)]);
+  }
+  err(""); $("pSend").disabled = true;
+  const r = await api("/api/podcast", {token: D.token, url, count: podN, styles: podStyles, times});
+  $("pSend").disabled = false;
+  if (!r.ok) return err(r.error || T.app_failed);
+  haptic("heavy"); podStop();
+  $("okTitle").textContent = T.pod_ok_title; $("okText").textContent = T.pod_ok_text; $("okChat").textContent = T.app_to_chat;
+  $("okGlow").style.backgroundImage = `url("${podUrl("cover.jpg")}")`; $("okScreen").classList.add("show");
 }
 const SWIPE_KEY = "swiped_v1";
 function swiped() { $("swipe").style.display = "none"; try { localStorage.setItem(SWIPE_KEY, "1"); } catch (e) {} }
@@ -581,7 +850,7 @@ function pick(s) {
   $("sName").textContent = icon(s) + " " + label(s); $("sWho").textContent = s.who || "";
   const vA = $("vAfter"), vB = $("vBefore");
   vA.poster = s.after ? afterSrc(s, ".jpg") : ""; vB.poster = s.before ? demoUrl(s.id, "before.jpg") : "";
-  vA.src = s.after ? afterSrc(s, ".mp4") : ""; vB.src = s.before ? demoUrl(s.id, "before.mp4") : "";
+  vA.src = s.after ? fast(afterSrc(s, ".mp4")) : ""; vB.src = s.before ? demoUrl(s.id, "before.mp4") : "";
   vA.load(); vB.load();
   const still = s.after ? demoUrl(s.id, "after.jpg") : (s.before ? demoUrl(s.id, "before.jpg") : "");
   if (still) $("glow").style.backgroundImage = `url(${still})`;
@@ -645,7 +914,8 @@ function still(s) { return !s ? "" : s.after ? afterSrc(s, ".jpg") : s.before ? 
 function preloadNext() {
   const nx = styleAt(1), v = $("vNext");
   if (!nx || nx === style || !nx.after) { v.removeAttribute("src"); return; }
-  const src = afterSrc(nx, ".mp4"); if (!v.src.endsWith(src)) { v.src = src; v.load(); }
+  const src = afterSrc(nx, ".mp4"); if (BLOBS[src]) { v.removeAttribute("src"); return; }  // already in memory
+  if (!v.src.endsWith(src)) { v.src = src; v.load(); }
 }
 (function swipe() {
   const feed = $("feed"), track = $("track"), peek = $("peek");
@@ -680,7 +950,7 @@ function preloadNext() {
   };
   feed.addEventListener("pointerup", end); feed.addEventListener("pointercancel", end);
   feed.addEventListener("wheel", e => { if (Math.abs(e.deltaY) < 25 || wheelLock) return; wheelLock = true; setTimeout(() => { wheelLock = false; }, 700); go(e.deltaY > 0 ? 1 : -1); }, {passive: true});
-  document.addEventListener("keydown", e => { if (document.querySelector("#app.open, .pg.show, #edit.show, .screen.show, .guide.show")) return;
+  document.addEventListener("keydown", e => { if (document.querySelector("#app.open, .pg.show, #edit.show, .screen.show, .guide.show, #pod.show")) return;
     if (e.key === "ArrowDown") go(1); else if (e.key === "ArrowUp") go(-1); });
 })();
 
