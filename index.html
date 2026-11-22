@@ -308,6 +308,8 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 /* Nov 22 (owner): while the automatic choice is on, a red note says how to mark the times yourself */
 .poff{margin-top:11px;padding:9px 11px;border-radius:12px;border:1.5px solid rgba(255,59,48,.75);background:rgba(255,59,48,.12);color:#ff9a90;font-size:12.5px;font-weight:700;line-height:1.4;display:flex;align-items:center;gap:12px;cursor:pointer}
 .poff>span{flex:1}
+/* Nov 22 (owner): «Жіберу» on the podcast page tells a client the page is shown in test mode (only the admin sends) */
+.plic{width:64px;height:64px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,209,92,.16);border:2px solid var(--gold);font-size:28px}
 /* a small copy of the switch keeps being pushed off by a finger: «switch it off like this» */
 .mswi{flex:none;position:relative;width:42px;height:25px;margin:0 4px 12px 0;border-radius:999px;background:#34C759;animation:mswBg 2.2s ease-in-out infinite}
 .mswi::after{content:"";position:absolute;top:3px;left:20px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4);animation:mswKnob 2.2s ease-in-out infinite}
@@ -406,6 +408,8 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="psend"><input class="plink" id="pLink" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="cta" id="pSend"></button></div>
     <div class="perr" id="pErr"></div>
   </div>
+  <div class="enotice" id="podLock"><div class="enbox glass" role="dialog" aria-modal="true"><button class="enx" id="plX" aria-label="X">✕</button>
+    <div class="plic">🧪</div><div class="enh" id="plTitle"></div><div class="enp" id="plText"></div><button class="cta" id="plOk"></button></div></div>
   <nav class="nav" id="nav">
     <button class="tab on" id="tabStyles"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span id="navStyles"></span></button>
     <button class="tab" id="tabPod"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><span id="navPod"></span></button>
@@ -675,6 +679,9 @@ function setupPod() {
   $("pTimesBtn").onclick = () => { haptic(); openTimes(); };
   $("pStyleRow").onclick = () => { haptic(); openPodStyles(); };
   $("pSend").onclick = podSend;
+  $("plTitle").textContent = T.pod_lock_title || ""; $("plText").textContent = T.pod_lock_text || ""; $("plOk").textContent = T.ed_notice_ok || "OK";
+  const unlock = () => { haptic(); $("podLock").classList.remove("show"); };
+  $("plX").onclick = unlock; $("plOk").onclick = unlock; $("podLock").onclick = e => { if (e.target === $("podLock")) unlock(); };
   $("psDone").onclick = () => { podStylesStop(); close(); renderPod(); };
   $("ptSave").onclick = saveTimes;
   renderPod();
@@ -765,6 +772,7 @@ function saveTimes() {
 }
 async function podSend() {
   const err = t => { $("pErr").textContent = t || ""; if (t) haptic("medium"); };
+  if (!D.admin) { haptic("medium"); $("podLock").classList.add("show"); return; }  // Nov 22 (owner): test mode for clients
   const url = $("pLink").value.trim();
   if (!/^https:\/\/((www\.|m\.)?youtube\.com\/|youtu\.be\/)/.test(url)) return err(T.pod_err_link);
   if (!podStyles.length) return err(T.pod_err_style);
@@ -778,6 +786,7 @@ async function podSend() {
   err(""); $("pSend").disabled = true;
   const r = await api("/api/podcast", {token: D.token, url, count: podN, styles: podStyles, times});
   $("pSend").disabled = false;
+  if (!r.ok && r.lock) { $("podLock").classList.add("show"); return; }
   if (!r.ok) return err(r.error || T.app_failed);
   haptic("heavy"); podStop();
   $("okTitle").textContent = T.pod_ok_title; $("okText").textContent = T.pod_ok_text; $("okChat").textContent = T.app_to_chat;
