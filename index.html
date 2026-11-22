@@ -306,7 +306,15 @@ input[type=range]{width:100%;accent-color:#FFD15C}
 .seg3 button{flex:1;border:0;background:transparent;color:rgba(255,255,255,.7);padding:8px 0;border-radius:11px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
 .seg3 button.on{background:#fff;color:#111}
 /* Nov 22 (owner): while the automatic choice is on, a red note says how to mark the times yourself */
-.poff{margin-top:11px;padding:9px 11px;border-radius:12px;border:1.5px solid rgba(255,59,48,.75);background:rgba(255,59,48,.12);color:#ff9a90;font-size:12.5px;font-weight:700;line-height:1.4}
+.poff{margin-top:11px;padding:9px 11px;border-radius:12px;border:1.5px solid rgba(255,59,48,.75);background:rgba(255,59,48,.12);color:#ff9a90;font-size:12.5px;font-weight:700;line-height:1.4;display:flex;align-items:center;gap:12px;cursor:pointer}
+.poff>span{flex:1}
+/* a small copy of the switch keeps being pushed off by a finger: «switch it off like this» */
+.mswi{flex:none;position:relative;width:42px;height:25px;margin:0 4px 12px 0;border-radius:999px;background:#34C759;animation:mswBg 2.2s ease-in-out infinite}
+.mswi::after{content:"";position:absolute;top:3px;left:20px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4);animation:mswKnob 2.2s ease-in-out infinite}
+.mswi b{position:absolute;top:13px;left:22px;font-size:17px;font-weight:400;animation:mswHand 2.2s ease-in-out infinite;pointer-events:none}
+@keyframes mswKnob{0%,28%{left:20px}55%,85%{left:3px}100%{left:20px}}
+@keyframes mswBg{0%,28%{background:#34C759}55%,85%{background:rgba(255,255,255,.28)}100%{background:#34C759}}
+@keyframes mswHand{0%,15%{left:24px;opacity:0}25%{left:22px;opacity:1}55%{left:4px;opacity:1}70%,100%{left:2px;opacity:0}}
 .tbtn{display:flex;align-items:center;gap:10px;margin-top:11px;padding:11px 12px;border-radius:14px;background:rgba(255,209,92,.12);border:1px solid rgba(255,209,92,.65);cursor:pointer}
 .tbtn div{flex:1}.tbtn b{display:block;font-size:13.5px;color:var(--gold)}.tbtn span{display:block;font-size:11.5px;color:rgba(255,255,255,.65);margin-top:3px;line-height:1.35}
 .tbtn em{font-style:normal;font-size:22px;color:var(--gold)}
@@ -389,7 +397,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="pcard lit" id="pAutoCard">
       <label class="arow"><div><b id="pAuto"></b><span id="pAutoSub"></span></div><input type="checkbox" class="sw" id="pAutoSw" checked></label>
       <div class="rc" id="pCountRow"><span id="pCountLbl"></span><div class="seg3" id="pCount"></div></div>
-      <div class="poff" id="pOffHint"></div>
+      <div class="poff" id="pOffHint"><span id="pOffText"></span><i class="mswi"><b>👆</b></i></div>
       <div class="tbtn" id="pTimesBtn" style="display:none"><div><b id="pTimesB"></b><span id="pTimesS"></span></div><em>›</em></div>
     </div>
     <div class="pstep"><span class="pnum">4</span><span id="pS4"></span></div>
@@ -651,7 +659,7 @@ function seg3(box, value, pick) {
 }
 function setupPod() {
   [["pS1", "pod_s1"], ["pTag", "pod_example"], ["pS2", "pod_s2"], ["pS2h", "pod_s2_hint"], ["pS3", "pod_s3"], ["pAuto", "pod_auto"],
-   ["pCountLbl", "pod_count"], ["pOffHint", "pod_hint_off"], ["pTimesB", "pod_times_btn"], ["pS4", "pod_s4"], ["pPick", "pod_pick"], ["pS5", "pod_s5"],
+   ["pCountLbl", "pod_count"], ["pOffText", "pod_hint_off"], ["pTimesB", "pod_times_btn"], ["pS4", "pod_s4"], ["pPick", "pod_pick"], ["pS5", "pod_s5"],
    ["pSend", "pod_send"], ["psTitle", "pod_s4"], ["psHint", "pod_styles_hint"], ["ptTitle", "pod_times_title"],
    ["ptCountLbl", "pod_count"], ["ptHint", "pod_times_hint"], ["ptStart", "pod_start"], ["ptEnd", "pod_end"], ["ptSave", "pod_save"]]
     .forEach(([id, key]) => { $(id).textContent = T[key] || ""; });
@@ -670,6 +678,7 @@ function setupPod() {
   row.addEventListener("scroll", () => { if (podCur && Math.abs(row.scrollLeft - x0) > 14) podStop(); }, {passive: true});
   row.addEventListener("pointerdown", () => { x0 = row.scrollLeft; });
   $("pAutoSw").onchange = () => { haptic(); podAuto = $("pAutoSw").checked; renderPod(); };
+  $("pOffHint").onclick = () => { haptic(); podAuto = false; renderPod(); };  // a tap on the red note switches it off too
   $("pTimesBtn").onclick = () => { haptic(); openTimes(); };
   $("pStyleRow").onclick = () => { haptic(); openPodStyles(); };
   $("pSend").onclick = podSend;
