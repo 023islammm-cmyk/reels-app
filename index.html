@@ -447,7 +447,10 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   <div class="sheet glass" id="allStyles"><h3><span id="allTitle"></span><span class="x" data-close>✕</span></h3><div class="grid" id="grid"></div></div>
   <div class="sheet glass mat" id="matSheet">
     <h3><span id="mTitle"></span><span class="x" data-close>✕</span></h3>
+    <div class="mlabel" id="mRefLbl" style="display:none"></div><div class="msub" id="mRefSub" style="display:none"></div>
     <button class="pickv" id="mVideo"></button>
+    <div class="mlabel" id="mOwnLbl" style="display:none"></div>
+    <button class="pickv" id="mOwn" style="display:none"></button>
     <div class="mlabel" id="mExtra"></div><div class="msub" id="mExtraSub"></div>
     <div class="addp" id="mAdd"><b>＋</b><div id="mAddText"></div></div>
     <div class="thumbs" id="mThumbs"></div>
@@ -1003,17 +1006,31 @@ $("send").onclick = async () => {
 };
 
 // ---------- the client's own photos/logo + a short note (Nov 12); Duel needs all its videos
-let mVideos = [], mPhotos = [];
+let mVideos = [], mPhotos = [], mOwn = null;
 function openMaterials() {
-  mVideos = []; mPhotos = []; $("mNote").value = ""; $("mErr").textContent = "";
+  mVideos = []; mPhotos = []; mOwn = null; $("mNote").value = ""; $("mErr").textContent = "";
   $("mTitle").textContent = T.app_send; $("mExtra").textContent = T.mat_extra; $("mExtraSub").textContent = T.mat_extra_sub;
   $("mAddText").textContent = T.mat_add; $("mNoteLbl").textContent = T.mat_note; $("mNote").placeholder = T.mat_note_hint;
   $("mSend").textContent = T.mat_send;
   // Nov 19 (Креатив 2): only videos here, no photos or note
   ["mExtra", "mExtraSub", "mAdd", "mThumbs", "mNoteLbl", "mNote"].forEach(id => $(id).style.display = style.materials ? "" : "none");
+  // Nov 23 (owner, «🎯 Референс»): 2-4 references, then the client's own video apart, and an instruction (not required)
+  ["mRefLbl", "mRefSub", "mOwnLbl", "mOwn", "mNoteLbl", "mNote"].forEach(id => { if (style.reference) $(id).style.display = ""; });
+  ["mRefLbl", "mRefSub", "mOwnLbl", "mOwn"].forEach(id => { if (!style.reference) $(id).style.display = "none"; });
+  if (style.reference) {
+    $("mRefLbl").textContent = "🎞 " + T.ref_refs; $("mRefSub").textContent = T.ref_refs_sub; $("mOwnLbl").textContent = "🎬 " + T.ref_own;
+    $("mNoteLbl").textContent = T.ref_note; $("mNote").placeholder = T.ref_note_hint;
+  }
   renderMat(); open("matSheet");
 }
+const REF_MAX = () => Math.max(1, (style.files || 5) - 1), REF_MIN = () => Math.max(1, (style.minFiles || 3) - 1);
 function renderMat() {
+  if (style.reference) {
+    $("mVideo").textContent = `🎞 ${T.ref_refs} ${mVideos.length}/${REF_MIN()}–${REF_MAX()}`;
+    $("mVideo").classList.toggle("done", mVideos.length >= REF_MIN());
+    $("mOwn").textContent = mOwn ? "✅ " + T.ref_own_ok : "🎬 " + T.ref_own_pick; $("mOwn").classList.toggle("done", !!mOwn);
+    $("mThumbs").innerHTML = ""; $("mAdd").style.display = "none"; return;
+  }
   const need = style.minFiles || style.files;
   $("mVideo").textContent = style.files > 1 ? `🎬 ${T.mat_videos} ${mVideos.length}/${need < style.files ? need + "–" + style.files : need}` : (mVideos.length ? "✅ " + T.mat_video_ok : "🎬 " + T.mat_pick_video);
   $("mVideo").classList.toggle("done", mVideos.length >= need);
@@ -1022,7 +1039,8 @@ function renderMat() {
     const x = document.createElement("i"); x.textContent = "✕"; x.onclick = () => { mPhotos.splice(i, 1); renderMat(); }; d.append(x); $("mThumbs").append(d); });
   $("mAdd").style.display = !style.materials || mPhotos.length >= 5 ? "none" : "flex";
 }
-$("mVideo").onclick = () => { const input = $("file"); input.accept = style.accept; input.multiple = style.files > 1; input.value = ""; input.dataset.mat = "1"; input.click(); };
+$("mVideo").onclick = () => { const input = $("file"); input.accept = style.accept; input.multiple = style.files > 1; input.value = ""; input.dataset.mat = style.reference ? "refs" : "1"; input.click(); };
+$("mOwn").onclick = () => { const input = $("file"); input.accept = style.accept; input.multiple = false; input.value = ""; input.dataset.mat = "own"; input.click(); };
 $("mAdd").onclick = () => { $("photos").value = ""; $("photos").click(); };
 $("photos").onchange = () => { mPhotos = mPhotos.concat(Array.from($("photos").files)).slice(0, 5); renderMat(); };
 function shrink(file) { return new Promise(res => { const img = new Image(); img.onload = () => { const k = Math.min(1, 1600 / Math.max(img.width, img.height));
@@ -1030,6 +1048,21 @@ function shrink(file) { return new Promise(res => { const img = new Image(); img
   const g = c.getContext("2d"); g.drawImage(img, 0, 0, c.width, c.height);
   c.toBlob(b => res(b || file), /png/i.test(file.type) ? "image/png" : "image/jpeg", .9); }; img.onerror = () => res(file); img.src = URL.createObjectURL(file); }); }
 $("mSend").onclick = async () => {
+  if (style.reference) {   // Nov 23: the own video goes first (1.mp4), the references after it
+    if (mVideos.length < REF_MIN()) { $("mErr").textContent = T.ref_need_refs; return; }
+    if (!mOwn) { $("mErr").textContent = T.ref_own_pick; return; }
+    $("mErr").textContent = ""; $("mSend").disabled = true;
+    try {
+      if ($("mNote").value.trim()) {
+        const fd = new FormData(); fd.append("token", D.token); fd.append("note", $("mNote").value.trim());
+        const r = await (await fetch(API + "/api/materials", {method: "POST", body: fd})).json().catch(() => ({ok: false}));
+        if (!r.ok) throw new Error("materials");
+      }
+      close(); upload([mOwn, ...mVideos]);
+    } catch (e) { $("mErr").textContent = T.app_failed; }
+    finally { $("mSend").disabled = false; }
+    return;
+  }
   const need = style.minFiles || style.files;
   if (mVideos.length < need) { $("mErr").textContent = need > 1 ? T.mat_need_videos.replace("%N%", need).replace("%K%", need - mVideos.length) : T.mat_pick_video; return; }
   $("mErr").textContent = ""; $("mSend").disabled = true;
@@ -1047,6 +1080,14 @@ $("mSend").onclick = async () => {
 $("file").addEventListener("cancel", () => report("cancelled"));
 $("file").onchange = async () => {
   const files = Array.from($("file").files); if (!files.length) return report("cancelled");
+  if ($("file").dataset.mat === "own" || $("file").dataset.mat === "refs") {   // Nov 23: «🎯 Референс»
+    const own = $("file").dataset.mat === "own"; delete $("file").dataset.mat;
+    const limit = own ? (style.max || 0) : (style.maxOther || style.max || 0);
+    for (const f of files) { const len = await duration(f);
+      if (limit && len && len > limit + 1) { $("mErr").textContent = T.app_too_long_text.replace("%LEN%", fmt(len)).replace("%MAX%", fmt(limit)); return; } }
+    if (own) mOwn = files[0]; else mVideos = mVideos.concat(files).slice(0, REF_MAX());
+    $("mErr").textContent = ""; renderMat(); return;
+  }
   if ($("file").dataset.mat) {
     delete $("file").dataset.mat;
     const maxSec = style.max || 0, other = style.maxOther || maxSec;
