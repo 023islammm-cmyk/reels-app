@@ -1275,13 +1275,27 @@ function drawAdminLists() {
   $("adTrial").innerHTML = userRows(ADM.trial.filter(keep)); $("adPaid").innerHTML = userRows(ADM.paid.filter(keep));
   $("pgAdmin").querySelectorAll("[data-uid]").forEach(x => x.onclick = () => { haptic(); openProfile(Number(x.dataset.uid)); });
 }
+// Nov 24 (owner): the real clients only (who blocked the bot drops out, who comes back is counted again), live
+function goneLine(r) { return r.gone ? `${r.signed} − ${r.gone} ${esc(T.ad_gone)} = ${r.registered}` : ""; }
+async function refreshAdmin() {
+  const page = $("pgAdmin");
+  if (document.hidden || !page || !page.classList.contains("show") || !$("adN")) return;
+  const r = await api("/api/admin", {token: D.token}).catch(() => null);
+  if (!r || !r.ok) return;
+  ADM = r;
+  $("adN").textContent = r.registered; $("adT").textContent = r.trial.length; $("adP").textContent = r.paid.length;
+  $("adD").textContent = "+" + r.today; $("adGone").textContent = goneLine(r);
+  drawAdminLists();
+  if ($("pgAll").classList.contains("show")) { $("allTitle2").textContent = `${T.ad_all} · ${ADM.all.length}`; drawAll(); }
+}
 async function openAdmin() {
   const r = await api("/api/admin", {token: D.token});
   if (!r.ok) return;
   ADM = r;
-  $("adBody").innerHTML = `<div class="stats4"><div class="glass tap" id="adAllBtn"><b>${r.registered}</b><span>${esc(T.ad_registered)}</span></div>`
-    + `<div class="glass"><b>${r.trial.length}</b><span>${esc(T.ad_trial)}</span></div><div class="glass g"><b>${r.paid.length}</b><span>${esc(T.ad_paid)}</span></div>`
-    + `<div class="glass"><b>+${r.today}</b><span>${esc(T.ad_today)}</span></div></div>`
+  $("adBody").innerHTML = `<div class="stats4"><div class="glass tap" id="adAllBtn"><b id="adN">${r.registered}</b><span>${esc(T.ad_registered)}</span></div>`
+    + `<div class="glass"><b id="adT">${r.trial.length}</b><span>${esc(T.ad_trial)}</span></div><div class="glass g"><b id="adP">${r.paid.length}</b><span>${esc(T.ad_paid)}</span></div>`
+    + `<div class="glass"><b id="adD">+${r.today}</b><span>${esc(T.ad_today)}</span></div></div>`
+    + `<div class="pnSm" id="adGone" style="margin:6px 4px 0;color:var(--muted);font-size:11.5px">${goneLine(r)}</div>`
     + `<input class="find glass" id="adFind" type="search" placeholder="🔎 ${esc(T.ad_search)}">`
     + `<div class="cols2"><div class="col2 glass"><h5>${esc(T.ad_trial)}<small>${esc(T.ad_trial_sub)}</small></h5><div id="adTrial"></div></div>`
     + `<div class="col2 glass"><h5>${esc(T.ad_paid_sub)}<small>${esc(D.tariffs.filter((x, i) => i > 0).map(x => x.name).join(" · "))}</small></h5><div id="adPaid"></div></div></div>`
@@ -1290,6 +1304,7 @@ async function openAdmin() {
   $("adAllBtn").onclick = () => { haptic(); openAll(); };
   drawAdminLists();
   pgOpen("pgAdmin");
+  if (!window._adTimer) window._adTimer = setInterval(refreshAdmin, 15000);
   adminJs().then(() => window.panelTiles($("adBody"))).catch(() => {});
 }
 boot();
