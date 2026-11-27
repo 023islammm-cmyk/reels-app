@@ -864,7 +864,7 @@ function renderTariffs() {
   D.tariffs.forEach(x => {
     const row = document.createElement("div"); row.className = "tar";
     row.innerHTML = `<div>${x.name}<small>${x.videos} ${T.app_video_word}${x.days > 0 ? ` · ${x.days} ${T.app_days}` : ""}</small></div><b>${x.price.toLocaleString("ru-RU")} ₸</b>`;
-    row.onclick = async () => { haptic("medium"); const r = await api("/api/tariff", {token: D.token, id: x.id}); if (r.ok && tg) tg.close(); };
+    row.onclick = async () => { haptic("medium"); payResult(await api("/api/tariff", {token: D.token, id: x.id})); };
     list.append(row);
   });
 }
@@ -1228,8 +1228,14 @@ function profileHtml(me, self) {
 }
 function wireTariffs(box) {
   box.querySelectorAll("[data-tar]").forEach(row => row.onclick = async () => {
-    haptic("medium"); const r = await api("/api/tariff", {token: D.token, id: row.dataset.tar}); if (r.ok && tg) tg.close();
+    haptic("medium"); payResult(await api("/api/tariff", {token: D.token, id: row.dataset.tar}));
   });
+}
+// Nov 28 (owner): the payment details are in the chat - close the app; a refusal is told, never silent
+function payResult(r) {
+  if (r && r.ok) { if (tg) tg.close(); return; }
+  const text = (r && r.text) || T.app_failed;
+  try { if (tg && tg.showAlert) tg.showAlert(text); else alert(text); } catch (e) { alert(text); }
 }
 async function openProfile(userId) {
   const r = userId ? await api("/api/admin/user", {token: D.token, id: userId}) : await api("/api/profile", {token: D.token});
