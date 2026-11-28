@@ -81,6 +81,20 @@ button{font-family:inherit}
 .nav .tab.on{background:rgba(0,0,0,.08)}
 .plus{flex:none;width:48px;height:32px;margin:0 6px;border:0;border-radius:10px;background:#111;color:#fff;font-size:22px;font-weight:800;line-height:32px;cursor:pointer;box-shadow:-3px 0 0 #25F4EE,3px 0 0 #FE2C55;font-family:inherit}
 .plus:active,#send:active{transform:scale(.96)}
+/* Nov 28 (owner, docs/mockups/kontent-rubrika-maket.html): the middle «＋» became a round, glowing «Контент» button */
+.kbtn{flex:none;width:74px;height:74px;margin:-30px 4px 0;border:0;border-radius:50%;padding:0;cursor:pointer;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#1a1200;
+  background:radial-gradient(circle at 32% 28%,#fff2b8,#ffd15c 38%,#f59e0b 75%,#c26d00);
+  box-shadow:0 0 0 4px #fff,0 8px 22px rgba(245,158,11,.55),0 0 30px rgba(255,209,92,.5);animation:kglow 2.4s ease-in-out infinite}
+.kbtn svg{width:24px;height:24px;fill:none;stroke:#1a1200;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.kbtn b{font-size:10px;font-weight:900}
+.kbtn:active{transform:scale(.95)}
+@keyframes kglow{0%,100%{box-shadow:0 0 0 4px #fff,0 8px 22px rgba(245,158,11,.5),0 0 22px rgba(255,209,92,.4)}50%{box-shadow:0 0 0 4px #fff,0 8px 26px rgba(245,158,11,.7),0 0 42px rgba(255,209,92,.75)}}
+.rtile{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);cursor:pointer}
+.rtile .ri{width:46px;height:46px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(255,255,255,.12)}
+.rtile b{display:block;font-size:14px}.rtile small{display:block;font-size:11.5px;opacity:.7;line-height:1.35}
+.rtile.on{border-color:#F5C451;box-shadow:0 0 0 1px #F5C451 inset}.rtile.on .ri{background:#F5C451}
+.rtile.soon{opacity:.45;cursor:default}.rtile .rs{margin-left:auto;font-size:10px;font-weight:800;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:2px 8px;white-space:nowrap}
 .top,#send,.acts,.dotsv,.info{transition:opacity .3s,transform .35s}
 /* Nov 22 (owner): while the demo plays only the clean video is left; a tap anywhere stops it and everything comes back */
 .playing .top,.playing #send,.playing .info,.playing .dotsv{opacity:0;pointer-events:none}
@@ -413,7 +427,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
   <nav class="nav" id="nav">
     <button class="tab on" id="tabStyles"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span id="navStyles"></span></button>
     <button class="tab" id="tabPod"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg><span id="navPod"></span></button>
-    <button class="plus" id="plus" aria-label="+">＋</button>
+    <button class="kbtn" id="plus" aria-label="Контент"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="#1a1200"/></svg><b>Контент</b></button>
     <button class="tab" id="tabCre"><svg viewBox="0 0 24 24"><path d="M9 17.5h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2V17h5v-1c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span id="navCre"></span></button>
     <button class="tab" id="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg><span id="meText"></span></button>
   </nav>
@@ -443,6 +457,7 @@ input[type=range]{width:100%;accent-color:#FFD15C}
     <div class="note" id="ptHint"></div><div class="thead"><span></span><span id="ptStart"></span><span></span><span id="ptEnd"></span></div>
     <div class="tlist" id="ptList"></div><div class="perr" id="ptErr"></div><button class="cta" id="ptSave" style="width:100%"></button></div>
   <div class="sheet glass" id="tfxSheet"><h3><span id="tfxTitle"></span><span class="x" data-close>✕</span></h3><div class="note" id="tfxHint"></div><div class="tgrid" id="tfxGrid"></div></div>
+  <div class="sheet glass" id="rubSheet"><h3><span>🎬 Контент</span><span class="x" data-close>✕</span></h3><div class="msub" id="rubSub"></div><div id="rgrid"></div></div>
   <div class="sheet glass" id="creSheet"><h3><span>💡 Креативтер</span><span class="x" data-close>✕</span></h3><div class="cgrid" id="cgrid"></div></div>
   <div class="sheet glass" id="allStyles"><h3><span id="allTitle"></span><span class="x" data-close>✕</span></h3><div class="grid" id="grid"></div></div>
   <div class="sheet glass mat" id="matSheet">
@@ -556,8 +571,9 @@ async function boot() {
   $("tfxLbl").textContent = T.app_text_fx; $("tfxTitle").textContent = T.app_text_fx; $("tfxHint").textContent = T.app_text_fx_hint;
   $("tfxLine").onclick = () => { haptic(); openLooks(); };
   $("colorLine").onclick = () => { haptic(); open("colorSheet"); };
-  D.creatives = D.styles.filter(s => s.creative); D.styles = D.styles.filter(s => !s.creative);
-  renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives(); setupNav();
+  D.creatives = D.styles.filter(s => s.creative); D.rubrics = D.styles.filter(s => s.rubric);
+  D.styles = D.styles.filter(s => !s.creative && !s.rubric);
+  renderRail(); renderColors(); renderTariffs(); renderLooks(); renderCreatives(); renderRubrics(); setupNav();
   pick(D.styles[0]);
   setupGuide();
   startWarm();
@@ -598,7 +614,7 @@ function setupNav() {
   $("navStyles").textContent = T.nav_styles; $("navPod").textContent = T.nav_podcast; $("navCre").textContent = T.nav_creative;
   // Nov 22 (owner): «Стильдер» on the podcast page goes back to the styles; on the styles it opens the full grid
   $("tabStyles").onclick = () => { haptic(); if (podOpen()) showPod(false); else open("allStyles"); };
-  $("plus").onclick = () => { showPod(false); $("send").click(); };
+  $("plus").onclick = () => { haptic("medium"); showPod(false); open("rubSheet"); };
   $("tabPod").onclick = () => { haptic(); showPod(true); };
   setupPod();
   $("swipeText").textContent = T.app_swipe_hint;
@@ -798,6 +814,21 @@ async function podSend() {
 const SWIPE_KEY = "swiped_v1";
 function swiped() { $("swipe").style.display = "none"; try { localStorage.setItem(SWIPE_KEY, "1"); } catch (e) {} }
 // Nov 16 (owner): ad creatives are not in the style feed; Nov 22: they open from the «Креатив» tab (the admin only for now)
+// Nov 28 (owner): «Контент» — ready rubric templates; the client sends their videos, the bot makes the rest
+function renderRubrics() {
+  const list = D.rubrics || [], g = $("rgrid"); g.innerHTML = "";
+  $("rubSub").textContent = "Дайын рубрикалар: видеоңызды жіберіңіз, бот өзі жасайды";
+  list.forEach(s => {
+    const t = document.createElement("div"); t.className = "rtile" + (style && style.id === s.id ? " on" : "");
+    t.innerHTML = `<span class="ri">${icon(s)}</span><div><b></b><small></small></div>`;
+    t.querySelector("b").textContent = label(s); t.querySelector("small").textContent = s.who || "";
+    t.onclick = () => { haptic(); pick(s); close(); renderRubrics(); }; g.append(t);
+  });
+  [["🎬", "Кино үзіндісі"], ["🧠", "Психология"], ["💼", "Бизнес кеңесі"]].forEach(([i, name]) => {
+    const t = document.createElement("div"); t.className = "rtile soon";
+    t.innerHTML = `<span class="ri">${i}</span><div><b>${name}</b><small>Жаңа рубрика</small></div><span class="rs">Жақында</span>`; g.append(t);
+  });
+}
 function renderCreatives() {
   const list = D.creatives || [];
   // Nov 22 (owner): the tab is shown to everyone; a client without creatives sees the "Жақында" tiles
